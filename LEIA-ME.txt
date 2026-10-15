@@ -1,0 +1,101 @@
+SIMULADO LSAR — TLSAR E CLSAR
+
+CONTEÚDO
+index.html        Página inicial e escolha dos cursos.
+css/estilo.css    Aparência dos dois simulados.
+js/simulado.js    Regras, navegação, correção, pontuação e progresso.
+dados/tlsar.js   159 perguntas TLSAR e suas referências.
+dados/clsar.js   128 perguntas CLSAR e suas referências.
+
+COMO USAR NO COMPUTADOR
+1. Extraia todos os arquivos do ZIP para uma pasta.
+2. Abra index.html em um navegador com JavaScript habilitado.
+3. Mantenha as subpastas css, js e dados junto de index.html.
+O simulado não depende de internet, bibliotecas externas ou instalação.
+
+COMO HOSPEDAR
+Envie index.html e as três subpastas para a mesma pasta da hospedagem.
+Publique o conteúdo extraído; não envie apenas index.html ou apenas o ZIP.
+A página inicial é index.html. Não é necessário configurar banco de dados.
+
+PROGRESSO
+O progresso e o último resultado são salvos no navegador, separadamente por curso.
+Uma nova tentativa substitui a anterior do mesmo curso.
+As chaves de armazenamento da versão anterior foram preservadas.
+Na hospedagem, dados já salvos continuam disponíveis no mesmo navegador quando
+é mantida a origem do site (protocolo, domínio e porta).
+Não há sincronização entre aparelhos ou navegadores, nem histórico de todas as tentativas.
+
+COMO ATUALIZAR PERGUNTAS
+Edite dados/tlsar.js ou dados/clsar.js. A aparência fica em css/estilo.css e
+as regras em js/simulado.js. Cada pergunta contém id, topic, page, question,
+options, answer e explanation. answer é o índice da resposta correta em options,
+contado a partir de zero. As alternativas são embaralhadas pelo simulado.
+Preserve os IDs existentes ao corrigir textos. Mudanças na composição do banco
+exigem atenção à compatibilidade dos simulados em andamento.
+
+FONTES E REGRAS
+Os bancos reproduzem os materiais de estudo fornecidos para cada curso.
+Uma questão por tela; correção imediata com explicação e referência de página.
+Respostas confirmadas ficam bloqueadas. Questões puladas podem ser retomadas.
+A nota final é (acertos / total de questões da rodada) x 10.
+
+
+CALCULADORA DE DERIVA E PLANEJAMENTO SAR
+Acesse “Cálculo de deriva e área de busca” na página inicial, ou abra deriva.html.
+Novos arquivos:
+deriva.html               Tela da calculadora.
+css/deriva.css            Aparência da calculadora e atalho da página inicial.
+js/calculos-deriva.js      Matemática de vetores, intervalos e planejamento.
+js/deriva.js               Interação, validação, consulta e memória de cálculo.
+dados/deriva.js           Tabelas de Wu e fw transcritas das fotos fornecidas.
+assets/                   Três fotos originais usadas como referência.
+
+COMO CALCULAR A DERIVA
+1. Informe data e hora do incidente e da chegada, na mesma referência de horário.
+2. Informe intensidade e direção verdadeira da corrente (para onde flui).
+3. Informe intensidade e direção verdadeira do vento e escolha se é “de onde”
+   ou “para onde” sopra. “De onde” é a convenção meteorológica padrão.
+4. Consulte o gráfico e informe o leeway em nós da condição adequada da balsa.
+   A leitura é manual. Nenhum coeficiente não fornecido foi atribuído às curvas.
+   O gráfico enviado abrange vento de 0 a 32 nós e leeway de 0 a 2,5 nós.
+   Para outros objetos ou fontes, selecione a opção manual correspondente.
+5. Calcule a resultante e a distância. O leeway atua para onde o vento sopra.
+
+MÉTODO
+Leste = corrente x sen(direção da corrente) + leeway x sen(direção do leeway).
+Norte = corrente x cos(direção da corrente) + leeway x cos(direção do leeway).
+Velocidade de deriva = raiz quadrada de (Leste² + Norte²).
+Direção = atan2(Leste, Norte), normalizada de 0° a 360°.
+Distância derivada = velocidade de deriva em nós x tempo decorrido em horas.
+Direção indeterminada quando a resultante é zero. Valores são arredondados
+apenas para exibição; a matemática usa a precisão disponível no navegador.
+Modelo: corrente e leeway constantes e leeway alinhado ao vento. Não calcula
+margens de incerteza, divergência angular, evolução do vento ou coordenadas do datum.
+
+PLANEJAMENTO DA BUSCA
+Para cada meio, escolha a tabela, objeto e coluna de visibilidade para obter Wu.
+A tabela de mercantes não é adotada automaticamente para uma LSAR.
+Para LSAR, outros meios ou dados fora das tabelas, use Wu manual de fonte aplicável.
+Os valores das colunas entre parênteses das fotos foram digitados em MN.
+Não há interpolação nem extrapolação automática das tabelas de varredura.
+Os fatores fw da foto abrangem apenas pessoa na água e balsa. Para embarcação
+como objeto de busca ou no modo manual, informe fw de uma fonte aplicável.
+Selecione a faixa de tempo conforme vento e mar; para critérios divergentes,
+considere a mais severa. A foto tem limites compartilhados entre algumas faixas.
+Informe S (espaçamento em MN), V (velocidade de busca em nós) e T (tempo de busca).
+T aceita HH:MM ou horas decimais. T de busca não é o tempo de deriva.
+Wc = Wu x fw; C = Wc / S; A = S x V x T; At = soma das áreas de todos os meios.
+C não é probabilidade de detecção. Wu zero gera cobertura zero, mesmo que haja
+área nominal percorrida pelo meio.
+R = raiz quadrada de At / 2, conforme a primeira foto: metade do lado de um
+quadrado equivalente, não o raio de um círculo de mesma área nem uma medida
+da incerteza da deriva. Sobreposições entre buscas não são descontadas de At.
+
+MEMÓRIA E DADOS
+O botão de download gera um TXT com os dados e os cálculos válidos atuais.
+Alterar um dado invalida o resultado correspondente até novo cálculo.
+Os campos da calculadora são salvos no navegador e não alteram os simulados.
+As fotos de referência e todos os scripts estão no pacote, para uso offline.
+Há links de consulta externa a documentos de USCG e AMSA; esses links precisam
+de conexão à internet, mas não são necessários para os cálculos.
