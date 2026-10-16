@@ -42,8 +42,14 @@
   return points[points.length-1][1];
  }
  function searchUnit(input){
-  const wu=nonnegative(input.wu,'Wu'),fw=positive(input.fw,'Fator do tempo fw'),spacing=positive(input.spacing,'Espaçamento S'),speed=positive(input.speed,'Velocidade V do meio'),time=hours(input.time,'Tempo T de busca');
-  const wc=wu*fw,coverage=wc/spacing,area=spacing*speed*time;if(![wc,coverage,area].every(Number.isFinite))throw Error('Os valores do meio excedem o intervalo de cálculo.');return {wu,fw,wc,spacing,speed,time,coverage,area};
+  const wu=nonnegative(input.wu,'Wu'),fw=positive(input.fw,'Fator do tempo fw'),speed=positive(input.speed,'Velocidade V do meio'),time=hours(input.time,'Tempo T de busca'),spacingMode=input.spacingMode||'spacing';
+  if(!['spacing','coverage'].includes(spacingMode))throw Error('Selecione como definir o espaçamento.');
+  const wc=wu*fw;
+  const desiredCoverage=spacingMode==='coverage'?positive(input.desiredCoverage,'Cobertura desejada C'):null;
+  if(spacingMode==='coverage'&&wc===0)throw Error('Wc é zero: não é possível obter cobertura positiva calculando S. Confira Wu e fw ou use um S informado para avaliar cobertura zero.');
+  const spacing=spacingMode==='coverage'?wc/desiredCoverage:positive(input.spacing,'Espaçamento S');
+  if(!Number.isFinite(spacing)||spacing<=0)throw Error('Espaçamento S calculado deve ser positivo e finito.');
+  const coverage=wc/spacing,area=spacing*speed*time;if(![wc,coverage,area].every(Number.isFinite))throw Error('Os valores do meio excedem o intervalo de cálculo.');return {wu,fw,wc,spacing,speed,time,coverage,area,spacingMode,desiredCoverage};
  }
  function searchTotal(units){if(!units.length)throw Error('Adicione pelo menos um meio de busca.');const area=units.reduce((sum,u)=>sum+u.area,0);if(!Number.isFinite(area))throw Error('Área total fora do intervalo numérico.');return {area,side:Math.sqrt(area),radius:Math.sqrt(area)/2};}
  const api=Object.freeze({number,nonnegative,positive,bearing,hours,normalize,elapsed,vector,drift,leewayAt,searchUnit,searchTotal});root.SARDrift=api;if(typeof module!=='undefined'&&module.exports)module.exports=api;
