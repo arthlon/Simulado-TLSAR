@@ -1,4 +1,87 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#0d273c"><title>Missão LSAR · Deriva e planejamento SAR</title><link rel="stylesheet" href="css/estilo.css"><link rel="stylesheet" href="css/deriva.css"></head><body>
+<!doctype html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#0d273c"><title>Missão LSAR · Deriva e planejamento SAR</title><script type="application/json" id="lsar-assets">{"styles":["css/estilo.css","css/deriva.css"],"scripts":["dados/deriva.js","js/calculos-deriva.js","js/deriva.js"]}</script>
+<script>
+/* Carregamento automático: nenhum número de versão precisa ser mantido. */
+(() => {
+  'use strict';
+  const hosted = /^https?:$/.test(location.protocol);
+  const nonce = () => Date.now().toString(36) + Math.random().toString(36).slice(2);
+  const freshURL = (path, token) => {
+    const url = new URL(path, location.href);
+    url.searchParams.delete('v');
+    url.searchParams.set('_lsar', token);
+    return url.href;
+  };
+  // Só comparamos o HTML antes de inicializar os aplicativos e alterar a tela.
+  const signature = root => {
+    const copy = root.cloneNode(true);
+    copy.querySelectorAll('noscript').forEach(node => node.remove());
+    return copy.outerHTML;
+  };
+  const navigateFresh = () => location.replace(freshURL(location.href, nonce()));
+  const load = (path, style, bypass) => new Promise((resolve, reject) => {
+    const node = document.createElement(style ? 'link' : 'script');
+    if (style) node.rel = 'stylesheet';
+    else node.async = false;
+    node.onload = resolve;
+    node.onerror = () => {
+      node.remove();
+      // Permite o uso de uma cópia disponível se a rede cair durante a abertura.
+      if (bypass) load(path, style, false).then(resolve, reject);
+      else reject(new Error('Não foi possível carregar ' + path));
+    };
+    node[style ? 'href' : 'src'] = hosted && bypass ? freshURL(path, nonce()) : path;
+    document.head.append(node);
+  });
+  async function start() {
+    const initialHTML = signature(document.documentElement);
+    const assets = JSON.parse(document.getElementById('lsar-assets').textContent);
+    if (hosted) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 4000);
+      try {
+        const response = await fetch(freshURL(location.href, nonce()), {
+          cache: 'no-store', credentials: 'same-origin', signal: controller.signal
+        });
+        if (response.ok && (response.headers.get('Content-Type') || '').includes('text/html')) {
+          const latest = new DOMParser().parseFromString(await response.text(), 'text/html');
+          // Não segue respostas de erro, login ou uma página de outro aplicativo.
+          if (latest.getElementById('lsar-assets') && signature(latest.documentElement) !== initialHTML) {
+            navigateFresh();
+            return;
+          }
+        }
+      } catch (_) {
+        // Uma verificação indisponível não bloqueia o aplicativo local disponível.
+      } finally { clearTimeout(timer); }
+      const url = new URL(location.href);
+      if (url.searchParams.has('_lsar')) {
+        url.searchParams.delete('_lsar');
+        try { history.replaceState(history.state, '', url); } catch (_) {}
+      }
+    }
+    try {
+      await Promise.all(assets.styles.map(path => load(path, true, hosted)));
+      for (const path of assets.scripts) await load(path, false, hosted);
+      document.documentElement.removeAttribute('data-lsar-loading');
+    } catch (error) {
+      document.documentElement.removeAttribute('data-lsar-loading');
+      const box = document.createElement('p');
+      box.setAttribute('role', 'alert');
+      box.textContent = 'Não foi possível carregar a página. Confira a conexão e tente novamente. ';
+      const retry = document.createElement('button');
+      retry.textContent = 'Tentar novamente';
+      retry.onclick = hosted ? navigateFresh : () => location.reload();
+      box.append(retry);
+      document.body.prepend(box);
+    }
+  }
+  // Uma página restaurada pelo botão Voltar também consulta os arquivos atuais.
+  addEventListener('pageshow', event => { if (hosted && event.persisted) navigateFresh(); });
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, {once:true});
+  else start();
+})();
+</script>
+</head><body>
 <header><div class="brand"><svg class="logo" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M20 5V35M5 20H35M20 10L24 24L20 21L16 24Z" fill="currentColor" stroke="currentColor" stroke-width="1.5"/></svg><div><strong>MISSÃO LSAR</strong><small>Deriva e planejamento SAR</small></div></div><span class="offline">Funciona offline</span></header>
 <main class="calc-main"><nav class="course-nav"><a class="link-btn" href="index.html">← Simulados TLSAR e CLSAR</a><a class="link-btn" href="#references">Tabelas e fontes</a></nav><section class="calc-intro"><p class="eyebrow">Ferramentas de estudo SAR</p><h1>Da deriva ao<br>planejamento da busca.</h1><p class="muted">Informe os dados do incidente, consulte o leeway e acompanhe cada etapa do cálculo. Depois, dimensione a busca com um ou mais meios.</p><div class="calc-steps"><a href="#drift-section">1 · Deriva</a><a href="#search-section">2 · Área de busca</a><a href="#references">3 · Tabelas</a></div></section>
 <section class="card calc-section" id="drift-section"><p class="eyebrow">Etapa 1 · Corrente + leeway</p><h2>Cálculo de deriva</h2><p class="muted">Modelo com corrente e leeway constantes ao longo do intervalo. Use direções verdadeiras: 000° = norte, 090° = leste.</p>
@@ -14,4 +97,4 @@
 <details class="reference-details"><summary>Entender a sequência das fórmulas</summary><dl class="formula-list"><dt>Wc = Wu × fw</dt><dd>Largura corrigida (MN) = largura não corrigida (MN) × fator do tempo.</dd><dt>C = Wc / S</dt><dd>Cobertura sem unidade; S é o espaçamento entre pernadas, em MN. C não é uma probabilidade de detecção.</dd><dt>A = S × V × T</dt><dd>Área nominal (MN²), com V em nós e T em horas de busca efetiva.</dd><dt>At = A1 + A2 + …</dt><dd>Soma nominal das áreas dos meios ou períodos. Sobreposições não são descontadas automaticamente.</dd><dt>R = √At / 2</dt><dd>Metade do lado do quadrado equivalente. Lado = √At = 2R. Esta fórmula não é a do raio de um círculo de mesma área.</dd></dl><p><a href="assets/formulas-sar.jpeg" target="_blank" rel="noopener">Conferir a primeira foto, com as fórmulas ↗</a></p></details>
 <details class="reference-details"><summary>Ver hipóteses e referências</summary><ul class="helper"><li>Corrente e leeway constantes; direções verdadeiras; leeway alinhado ao sentido para onde o vento sopra. Não inclui divergência angular, evolução do vento ou margens de incerteza.</li><li>A ferramenta calcula deslocamento. Sem uma posição inicial informada, não determina coordenadas geográficas do datum.</li><li>R vem da área nominal planejada e da fórmula da foto, não da incerteza de posição do objeto.</li><li>As fotos fornecidas são a fonte dos valores digitados nas tabelas; os originais estão incluídos para conferência.</li></ul><ul id="external-references" class="helper"></ul></details>
 </section><div class="calc-toolbar"><button type="button" id="export-report" class="btn secondary" disabled>Baixar memória de cálculo (.txt)</button><button type="button" id="clear-calculator" class="link-btn">Limpar calculadora</button></div><p id="storage-note" class="save-notice">Os dados desta calculadora ficam salvos neste navegador, separados dos simulados.</p></main>
-<footer>Ferramenta de estudo e conferência de cálculos SAR. As leituras gráficas e a adequação das tabelas ao objeto, meio e condições devem ser verificadas no material aplicável.</footer><noscript><p>Ative o JavaScript para usar a calculadora.</p></noscript><script defer src="dados/deriva.js"></script><script defer src="js/calculos-deriva.js"></script><script defer src="js/deriva.js"></script></body></html>
+<footer>Ferramenta de estudo e conferência de cálculos SAR. As leituras gráficas e a adequação das tabelas ao objeto, meio e condições devem ser verificadas no material aplicável.</footer><noscript><p>Ative o JavaScript para usar a calculadora.</p></noscript></body></html>

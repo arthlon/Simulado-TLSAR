@@ -108,3 +108,23 @@ A rosa de manobra tem azimutes verdadeiros de 000° a 359° e escala em nós.
 A corrente vai de O a C, o leeway parte da ponta da corrente (C a D), e a
 resultante vai de O a D. A seta de leeway representa a velocidade induzida
 pelo vento. Rascunhos antigos com valor de leeway mantêm esse valor no modo manual.
+
+ATUALIZAÇÕES AUTOMÁTICAS
+Basta substituir os arquivos no servidor. Não é necessário executar comandos,
+controlar números de versão, alterar o endereço ou pedir aos usuários que limpem
+o cache a cada atualização.
+
+A cada abertura, a página consulta o HTML atual sem reutilizar o cache. Se o
+HTML mudou, ela recarrega automaticamente. Os estilos, scripts e bancos de
+questões também são consultados com URLs únicas por acesso, inclusive quando
+somente um desses arquivos tiver sido atualizado. Isso aumenta um pouco o
+tráfego por abertura e dispensa qualquer etapa de geração de versões.
+O histórico e os rascunhos continuam salvos no mesmo navegador.
+
+O .htaccess e o _headers reforçam as regras de cache nas hospedagens compatíveis.
+Envie-os junto com os demais arquivos. A pasta local continua funcionando offline.
+A consulta automática começa quando o navegador recebe esta versão. Uma cópia
+antiga já armazenada, anterior a esta correção, não contém esse código: apenas
+nessa transição pode ser necessário recarregar a página uma vez. Um cache de
+servidor/CDN que ignore parâmetros e force conteúdo antigo precisa ser corrigido
+na própria hospedagem.

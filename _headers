@@ -1,0 +1,5 @@
+# Netlify / Cloudflare Pages: regras para a publicação na raiz ou em subpasta.
+/*
+  Cache-Control: no-cache, must-revalidate
+/*.html
+  Cache-Control: no-store, no-cache, must-revalidate, max-age=0
