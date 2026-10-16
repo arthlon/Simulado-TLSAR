@@ -1,6 +1,5 @@
 'use strict';
-// Valores em MN, transcritos das colunas entre parênteses nas fotos fornecidas.
-// Não há extrapolação nem interpolação automática das tabelas.
+// Wu e fw em MN, transcritos das fotos. Curvas de leeway: aproximação digitalizada, não equações oficiais.
 window.SAR_DRIFT_TABLES = {
   "version": 1,
   "unit": "MN",
@@ -378,5 +377,103 @@ window.SAR_DRIFT_TABLES = {
       "label": "AMSA — NATSAR 2026, apêndices: referências complementares sobre leeway e vetores.",
       "url": "https://www.amsa.gov.au/sites/default/files/2026-03/NATSAR-Manual-February-2026-Appendices.pdf"
     }
-  ]
+  ],
+  "leewayDigitization": {
+    "version": 1,
+    "windRange": [
+      0,
+      32
+    ],
+    "leewayRange": [
+      0,
+      2.5
+    ],
+    "approximate": true,
+    "source": "Foto fornecida: assets/tempo-leeway.jpeg",
+    "method": "Retificação dos eixos fotografados e ajuste de retas que passam pela origem. Leituras da ordenada a 32 nós arredondadas para representar a resolução gráfica; interpolação linear dentro da faixa. Não são coeficientes oficiais do manual.",
+    "calibrationPixels": {
+      "size": [
+        1080,
+        1440
+      ],
+      "bottomLeft": [
+        160,
+        1257
+      ],
+      "bottomRight": [
+        628,
+        1250
+      ],
+      "topLeft": [
+        160,
+        685
+      ],
+      "topRight": [
+        625,
+        682
+      ]
+    },
+    "curves": [
+      {
+        "id": "without",
+        "label": "Balsa sem âncora flutuante (without drogue)",
+        "color": "#b85a3d",
+        "points": [
+          [
+            0,
+            0
+          ],
+          [
+            32,
+            2.3
+          ]
+        ]
+      },
+      {
+        "id": "ballast",
+        "label": "Balsa com sistema de lastro melhorado (improved ballast)",
+        "color": "#8a61b0",
+        "points": [
+          [
+            0,
+            0
+          ],
+          [
+            32,
+            1.45
+          ]
+        ]
+      },
+      {
+        "id": "drogue",
+        "label": "Balsa com âncora flutuante (with drogue)",
+        "color": "#296da5",
+        "points": [
+          [
+            0,
+            0
+          ],
+          [
+            32,
+            1.1
+          ]
+        ]
+      },
+      {
+        "id": "uncovered",
+        "label": "Balsa com âncora flutuante, cobertura não armada",
+        "color": "#087970",
+        "points": [
+          [
+            0,
+            0
+          ],
+          [
+            32,
+            0.8
+          ]
+        ]
+      }
+    ]
+  }
 };

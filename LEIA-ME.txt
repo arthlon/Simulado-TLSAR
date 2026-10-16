@@ -56,10 +56,12 @@ COMO CALCULAR A DERIVA
 2. Informe intensidade e direção verdadeira da corrente (para onde flui).
 3. Informe intensidade e direção verdadeira do vento e escolha se é “de onde”
    ou “para onde” sopra. “De onde” é a convenção meteorológica padrão.
-4. Consulte o gráfico e informe o leeway em nós da condição adequada da balsa.
-   A leitura é manual. Nenhum coeficiente não fornecido foi atribuído às curvas.
-   O gráfico enviado abrange vento de 0 a 32 nós e leeway de 0 a 2,5 nós.
-   Para outros objetos ou fontes, selecione a opção manual correspondente.
+4. Selecione a condição da balsa para obter automaticamente o leeway pelo
+   gráfico digitalizado. As quatro retas são aproximações da foto fornecida,
+   não equações oficiais. A interpolação é linear entre os pontos digitizados
+   de cada curva, para vento de 0 a 32 nós, sem extrapolação. O valor automático
+   é arredondado a 0,01 nó. O modo manual permite inserir ou ajustar o leeway,
+   inclusive para outros objetos e fontes. A foto permanece disponível por link.
 5. Calcule a resultante e a distância. O leeway atua para onde o vento sopra.
 
 MÉTODO
@@ -99,3 +101,10 @@ Os campos da calculadora são salvos no navegador e não alteram os simulados.
 As fotos de referência e todos os scripts estão no pacote, para uso offline.
 Há links de consulta externa a documentos de USCG e AMSA; esses links precisam
 de conexão à internet, mas não são necessários para os cálculos.
+
+ATUALIZAÇÕES DA INTERFACE
+Os campos de data e hora se empilham em telas menores para evitar sobreposição.
+A rosa de manobra tem azimutes verdadeiros de 000° a 359° e escala em nós.
+A corrente vai de O a C, o leeway parte da ponta da corrente (C a D), e a
+resultante vai de O a D. A seta de leeway representa a velocidade induzida
+pelo vento. Rascunhos antigos com valor de leeway mantêm esse valor no modo manual.

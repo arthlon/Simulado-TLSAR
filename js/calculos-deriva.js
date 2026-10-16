@@ -34,10 +34,17 @@
   if(![speed,time,distance,east,north].every(Number.isFinite))throw Error('Os valores excedem o intervalo de cálculo.');
   return {time,currentSpeed,currentDirection,windSpeed,windDirection,leeway,leewayDirection,current,windDrift,east,north,speed,direction,distance,distanceKm:distance*1.852};
  }
+ function leewayAt(wind,points){
+  const speed=nonnegative(wind,'Intensidade do vento');
+  if(!Array.isArray(points)||points.length<2||!points.every((p,i)=>Array.isArray(p)&&p.length===2&&p.every(Number.isFinite)&&p[0]>=0&&p[1]>=0&&(i===0||p[0]>points[i-1][0])))throw Error('Curva de leeway inválida.');
+  if(speed<points[0][0]||speed>points[points.length-1][0])throw Error('O gráfico digitalizado abrange vento de 0 a 32 nós. Use o modo manual fora dessa faixa.');
+  for(let i=1;i<points.length;i++){const [x0,y0]=points[i-1],[x1,y1]=points[i];if(speed<=x1)return y0+(y1-y0)*(speed-x0)/(x1-x0);}
+  return points[points.length-1][1];
+ }
  function searchUnit(input){
   const wu=nonnegative(input.wu,'Wu'),fw=positive(input.fw,'Fator do tempo fw'),spacing=positive(input.spacing,'Espaçamento S'),speed=positive(input.speed,'Velocidade V do meio'),time=hours(input.time,'Tempo T de busca');
   const wc=wu*fw,coverage=wc/spacing,area=spacing*speed*time;if(![wc,coverage,area].every(Number.isFinite))throw Error('Os valores do meio excedem o intervalo de cálculo.');return {wu,fw,wc,spacing,speed,time,coverage,area};
  }
  function searchTotal(units){if(!units.length)throw Error('Adicione pelo menos um meio de busca.');const area=units.reduce((sum,u)=>sum+u.area,0);if(!Number.isFinite(area))throw Error('Área total fora do intervalo numérico.');return {area,side:Math.sqrt(area),radius:Math.sqrt(area)/2};}
- const api=Object.freeze({number,nonnegative,positive,bearing,hours,normalize,elapsed,vector,drift,searchUnit,searchTotal});root.SARDrift=api;if(typeof module!=='undefined'&&module.exports)module.exports=api;
+ const api=Object.freeze({number,nonnegative,positive,bearing,hours,normalize,elapsed,vector,drift,leewayAt,searchUnit,searchTotal});root.SARDrift=api;if(typeof module!=='undefined'&&module.exports)module.exports=api;
 })(typeof window!=='undefined'?window:globalThis);
