@@ -5,7 +5,7 @@ window.SAR_DRIFT_TABLES = {
   "unit": "MN",
   "platforms": {
     "merchant": {
-      "label": "Navio mercante — tabela da foto",
+      "label": "Navio mercante — largura de varredura",
       "visibility": [
         "3 MN (6 km)",
         "5 MN (9 km)",
@@ -125,7 +125,7 @@ window.SAR_DRIFT_TABLES = {
       ]
     },
     "helicopter": {
-      "label": "Helicóptero — tabela da foto",
+      "label": "Helicóptero — largura de varredura",
       "visibility": [
         "1 MN (1,9 km)",
         "5 MN (9,3 km)",
@@ -225,7 +225,7 @@ window.SAR_DRIFT_TABLES = {
       ]
     },
     "fixed": {
-      "label": "Aeronave de asa fixa — tabela da foto",
+      "label": "Aeronave de asa fixa — largura de varredura",
       "visibility": [
         "1 MN (1,9 km)",
         "5 MN (9,3 km)",

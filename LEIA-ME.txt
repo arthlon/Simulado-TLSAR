@@ -73,7 +73,8 @@ Distância derivada = velocidade de deriva em nós x tempo decorrido em horas.
 Direção indeterminada quando a resultante é zero. Valores são arredondados
 apenas para exibição; a matemática usa a precisão disponível no navegador.
 Modelo: corrente e leeway constantes e leeway alinhado ao vento. Não calcula
-margens de incerteza, divergência angular, evolução do vento ou coordenadas do datum.
+margens de incerteza, divergência angular ou evolução do vento. Com LKP opcional,
+estima as coordenadas do DATUM na hora da chegada, conforme descrito abaixo.
 
 PLANEJAMENTO DA BUSCA
 Para cada meio, escolha a tabela, objeto e coluna de visibilidade para obter Wu.
@@ -139,3 +140,50 @@ A sequência de fórmulas explica finalidade, unidades, exemplos e limites.
 Toque/clique na rosa ou use Enter para abrir a visualização ampliada, com zoom
 de 100% a 200%, graduação de 1°, números a cada 10° e tabela dos vetores.
 Feche pelo botão, por Esc ou clicando fora da janela. O cálculo fica preservado.
+
+LKP OPCIONAL E DATUM ESTIMADO
+Preencha latitude e longitude do LKP para estimar a posição do DATUM na chegada.
+Sem LKP, a deriva e o dimensionamento da busca continuam funcionando normalmente.
+São aceitos graus decimais, graus/minutos, graus/minutos/segundos e GPS/NMEA
+compacto. O modo automático identifica os três primeiros; o compacto exige
+a escolha do modo GPS/NMEA. Consulte os exemplos na própria página.
+Sem sinal nem letra, selecione o hemisfério; sinais ou letras no texto prevalecem
+sobre os seletores. A prévia mostra a interpretação e acompanha os seletores.
+O cálculo valida graus e minutos, os limites de 90°/180° e o par de coordenadas.
+
+O horário do LKP é opcional: em branco, usa o horário do incidente. Quando
+informado, usa esse instante para calcular a distância entre LKP e DATUM;
+a distância de deriva desde o incidente continua sendo exibida separadamente.
+Todos os horários devem usar a mesma referência. Não pode haver LKP após a chegada.
+
+Método: propagação por rumo verdadeiro constante (linha loxodrômica) numa Terra
+esférica de raio 6.371.000 m. A distância em MN é convertida por 1 MN = 1.852 m.
+A velocidade resultante é aplicada ao intervalo LKP → chegada. Não se considera
+evolução temporal de corrente/leeway, divergência, margens de incerteza, obstáculos
+ou encalhe. Os dados de corrente e leeway devem ser representativos desse intervalo.
+Trajetos que partem de um polo ou o atingem são rejeitados por limitação do modelo.
+A passagem pelo antimeridiano normaliza a longitude. Se não houver deslocamento,
+o DATUM coincide com o LKP. Coordenadas são arredondadas só para exibição.
+
+O DATUM aparece em graus/minutos e graus decimais, na rosa ampliada e no relatório.
+Não confundir DATUM (posição estimada) com datum geodésico ou com raio de incerteza.
+Referência matemática: https://www.movable-type.co.uk/scripts/latlong.html#rhumblines
+Os títulos das seções agora identificam deriva, DATUM, espaçamento, cobertura e área.
+
+FORMATOS DE COORDENADAS E IDENTIFICAÇÃO BETA
+A calculadora aparece como Beta no cartão de acesso da página inicial.
+O LKP aceita, em campos separados de latitude e longitude:
+- Graus decimais: -20,308333 ou 20.308333 S.
+- Graus/minutos: 20 18,500 S ou 20°18.500′S.
+- Graus/minutos/segundos: 20 18 30 S ou 20°18′30″S; segundos decimais permitidos.
+- GPS/NMEA compacto: 2018.5000 S e 04017.2000 W, no modo específico.
+Não é necessário colar uma sentença NMEA completa; ela não é aceita.
+No compacto, preserve quatro dígitos antes do decimal na latitude e cinco na
+longitude. Referência: https://receiverhelp.trimble.com/alloy-gnss/en-us/nmea0183-messages-common-message-elements.html
+
+Aceita ponto ou vírgula decimal, sinais +/− e letra de hemisfério antes ou depois
+do valor. N/S são latitude; L/E são leste e O/W são oeste. O sinal + significa
+norte/leste e − significa sul/oeste; sinal e letra contraditórios são rejeitados.
+O seletor só define o hemisfério quando não existe sinal nem letra no texto.
+Quando há indicação explícita, o seletor acompanha o texto e fica bloqueado.
+O DATUM também é exibido em graus/minutos/segundos no resultado e no relatório.
