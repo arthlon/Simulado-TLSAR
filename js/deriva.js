@@ -209,4 +209,5 @@
  $('add-unit').onclick=()=>{if($('units').children.length>=30){$('search-error').textContent='Limite de 30 meios nesta calculadora.';return;}addUnit();invalidate('search');};
  $('export-report').onclick=exportReport;
  $('clear-calculator').onclick=()=>{if(!window.confirm('Limpar os dados da calculadora? Os simulados não serão alterados.'))return;$('drift-form').reset();syncLeeway();updateCoordinateHelp();syncCoordinatePreview();$('units').replaceChildren();addUnit();lastDrift=null;lastSearch=null;$('drift-result').hidden=true;$('search-result').hidden=true;['drift-error','search-error','drift-dirty','search-dirty'].forEach(id=>$(id).textContent='');updateExport();save();};
+ document.dispatchEvent(new Event('lsar:calculator-ready'));
 })();

@@ -203,3 +203,14 @@ Recorte criado pela ferramenta integrada de edição de imagem (image_gen) e
 reduzido para miniatura. Prompt aplicado: extrair somente a lancha LSAR-02 da
 foto, preservando casco, cabine laranja, proporções e inscrições; remover céu,
 água, espuma e paisagem, com fundo transparente e sem moldura ou elementos novos.
+
+ABERTURA DA CALCULADORA
+O conteúdo fica visível somente depois de restaurar os campos salvos, preencher
+os seletores, desenhar o gráfico de leeway e conectar os controles. A página
+não mostra o formulário intermediário e não adiciona uma tela de carregamento.
+A verificação de atualização continua em segundo plano, fora dessa espera.
+Os links entre os simulados e a calculadora levam o identificador da revisão
+para evitar abrir um HTML antigo na navegação normal. A volta do navegador
+continua sem recarga forçada. Se um arquivo essencial falhar ou a montagem
+exceder 12 segundos, aparece uma mensagem para tentar novamente, preservando
+os dados salvos. Quando o JavaScript está desativado, vale o aviso da página.
