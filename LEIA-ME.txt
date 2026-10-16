@@ -128,3 +128,14 @@ antiga já armazenada, anterior a esta correção, não contém esse código: ap
 nessa transição pode ser necessário recarregar a página uma vez. Um cache de
 servidor/CDN que ignore parâmetros e force conteúdo antigo precisa ser corrigido
 na própria hospedagem.
+
+COBERTURA E ROSA AMPLIADA
+Cada meio permite informar S e calcular C ou informar C e calcular S = Wc/C.
+No segundo modo, o espaçamento é atualizado com Wu, fw e C, sem arredondamento
+intermediário. C deve ser positivo; Wc zero não permite calcular S para C positivo.
+Para avaliar cobertura zero, use um S informado. Rascunhos antigos mantêm o modo
+de informar S. O relatório identifica como o espaçamento foi obtido.
+A sequência de fórmulas explica finalidade, unidades, exemplos e limites.
+Toque/clique na rosa ou use Enter para abrir a visualização ampliada, com zoom
+de 100% a 200%, graduação de 1°, números a cada 10° e tabela dos vetores.
+Feche pelo botão, por Esc ou clicando fora da janela. O cálculo fica preservado.
