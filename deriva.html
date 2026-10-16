@@ -1,88 +1,14 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#0d273c"><title>Missão LSAR · Deriva, DATUM e área de busca</title><script type="application/json" id="lsar-assets">{"styles":["css/estilo.css","css/deriva.css"],"scripts":["dados/deriva.js","js/calculos-deriva.js","js/deriva.js"]}</script>
-<script>
-/* Carregamento automático: nenhum número de versão precisa ser mantido. */
-(() => {
-  'use strict';
-  const hosted = /^https?:$/.test(location.protocol);
-  const nonce = () => Date.now().toString(36) + Math.random().toString(36).slice(2);
-  const freshURL = (path, token) => {
-    const url = new URL(path, location.href);
-    url.searchParams.delete('v');
-    url.searchParams.set('_lsar', token);
-    return url.href;
-  };
-  // Só comparamos o HTML antes de inicializar os aplicativos e alterar a tela.
-  const signature = root => {
-    const copy = root.cloneNode(true);
-    copy.querySelectorAll('noscript').forEach(node => node.remove());
-    return copy.outerHTML;
-  };
-  const navigateFresh = () => location.replace(freshURL(location.href, nonce()));
-  const load = (path, style, bypass) => new Promise((resolve, reject) => {
-    const node = document.createElement(style ? 'link' : 'script');
-    if (style) node.rel = 'stylesheet';
-    else node.async = false;
-    node.onload = resolve;
-    node.onerror = () => {
-      node.remove();
-      // Permite o uso de uma cópia disponível se a rede cair durante a abertura.
-      if (bypass) load(path, style, false).then(resolve, reject);
-      else reject(new Error('Não foi possível carregar ' + path));
-    };
-    node[style ? 'href' : 'src'] = hosted && bypass ? freshURL(path, nonce()) : path;
-    document.head.append(node);
-  });
-  async function start() {
-    const initialHTML = signature(document.documentElement);
-    const assets = JSON.parse(document.getElementById('lsar-assets').textContent);
-    if (hosted) {
-      const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), 4000);
-      try {
-        const response = await fetch(freshURL(location.href, nonce()), {
-          cache: 'no-store', credentials: 'same-origin', signal: controller.signal
-        });
-        if (response.ok && (response.headers.get('Content-Type') || '').includes('text/html')) {
-          const latest = new DOMParser().parseFromString(await response.text(), 'text/html');
-          // Não segue respostas de erro, login ou uma página de outro aplicativo.
-          if (latest.getElementById('lsar-assets') && signature(latest.documentElement) !== initialHTML) {
-            navigateFresh();
-            return;
-          }
-        }
-      } catch (_) {
-        // Uma verificação indisponível não bloqueia o aplicativo local disponível.
-      } finally { clearTimeout(timer); }
-      const url = new URL(location.href);
-      if (url.searchParams.has('_lsar')) {
-        url.searchParams.delete('_lsar');
-        try { history.replaceState(history.state, '', url); } catch (_) {}
-      }
-    }
-    try {
-      await Promise.all(assets.styles.map(path => load(path, true, hosted)));
-      for (const path of assets.scripts) await load(path, false, hosted);
-      document.documentElement.removeAttribute('data-lsar-loading');
-    } catch (error) {
-      document.documentElement.removeAttribute('data-lsar-loading');
-      const box = document.createElement('p');
-      box.setAttribute('role', 'alert');
-      box.textContent = 'Não foi possível carregar a página. Confira a conexão e tente novamente. ';
-      const retry = document.createElement('button');
-      retry.textContent = 'Tentar novamente';
-      retry.onclick = hosted ? navigateFresh : () => location.reload();
-      box.append(retry);
-      document.body.prepend(box);
-    }
-  }
-  // Uma página restaurada pelo botão Voltar também consulta os arquivos atuais.
-  addEventListener('pageshow', event => { if (hosted && event.persisted) navigateFresh(); });
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, {once:true});
-  else start();
-})();
-</script>
+<!doctype html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#0d273c"><title>Missão LSAR · Deriva, DATUM e área de busca</title>
+<script type="application/json" id="lsar-assets">{}</script>
+<meta name="lsar-build" content="801a3487537f7150">
+<link rel="stylesheet" href="css/estilo.css?v=c910ab9c70e320dc">
+<link rel="stylesheet" href="css/deriva.css?v=67ccb4c677a03c0f">
+<script defer src="dados/deriva.js?v=0bc56180f3a7d4f0"></script>
+<script defer src="js/calculos-deriva.js?v=b69de9c6862d2a5f"></script>
+<script defer src="js/deriva.js?v=6da3086b6c57c2df"></script>
+<script defer src="js/atualizacao.js?v=dd35f790c98cd757"></script>
 </head><body>
-<header><div class="brand"><svg class="logo" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M20 5V35M5 20H35M20 10L24 24L20 21L16 24Z" fill="currentColor" stroke="currentColor" stroke-width="1.5"/></svg><div><strong>MISSÃO LSAR</strong><small>Deriva, DATUM e área de busca</small></div></div><span class="offline">Funciona offline</span></header>
+<header><div class="brand"><img class="logo lsar-logo" src="assets/lsar-miniatura.png?v=c22e51be45986b50" alt="Lancha de busca e salvamento LSAR-02" width="82" height="58" decoding="async" fetchpriority="high"><div><strong>MISSÃO LSAR</strong><small>Calculadora de deriva · DATUM e área de busca</small></div></div><span class="offline">Funciona offline</span></header>
 <main class="calc-main"><nav class="course-nav"><a class="link-btn" href="index.html">← Simulados TLSAR e CLSAR</a><a class="link-btn" href="#references">Tabelas e fontes</a></nav><section class="calc-intro"><p class="eyebrow">Ferramentas de estudo SAR</p><h1>Deriva, DATUM e<br>área de busca.</h1><p class="muted">Calcule a deriva e, se informar o LKP, estime o DATUM na chegada. Depois, determine o espaçamento, a cobertura e a área nominal para cada meio de busca.</p><div class="calc-steps"><a href="#drift-section">1 · Deriva e DATUM</a><a href="#search-section">2 · Cobertura e área</a><a href="#references">3 · Tabelas</a></div></section>
 <section class="card calc-section" id="drift-section"><p class="eyebrow">Etapa 1 · Deslocamento e posição estimada</p><h2>Deriva e estimativa do DATUM</h2><p class="muted">Modelo com corrente e leeway constantes ao longo do intervalo. Use direções verdadeiras: 000° = norte, 090° = leste.</p>
 <form id="drift-form" novalidate><div class="form-grid date-time-grid"><label>Data e hora do incidente<input type="datetime-local" id="incident" required></label><label>Data e hora da chegada<input type="datetime-local" id="arrival" required></label></div><p class="helper">Use a mesma referência de horário nos dois campos (ambos UTC ou ambos no mesmo fuso local). As datas resolvem a passagem pela meia-noite.</p>

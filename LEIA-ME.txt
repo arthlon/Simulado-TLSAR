@@ -110,25 +110,31 @@ A corrente vai de O a C, o leeway parte da ponta da corrente (C a D), e a
 resultante vai de O a D. A seta de leeway representa a velocidade induzida
 pelo vento. Rascunhos antigos com valor de leeway mantêm esse valor no modo manual.
 
-ATUALIZAÇÕES AUTOMÁTICAS
-Basta substituir os arquivos no servidor. Não é necessário executar comandos,
-controlar números de versão, alterar o endereço ou pedir aos usuários que limpem
-o cache a cada atualização.
+CARREGAMENTO E ATUALIZAÇÕES
+Basta substituir o pacote completo no servidor, incluindo versao.json e todas
+as pastas. Não execute comandos, não gere versões manualmente e não limpe o
+histórico do navegador. Os identificadores de conteúdo já vêm neste pacote.
 
-A cada abertura, a página consulta o HTML atual sem reutilizar o cache. Se o
-HTML mudou, ela recarrega automaticamente. Os estilos, scripts e bancos de
-questões também são consultados com URLs únicas por acesso, inclusive quando
-somente um desses arquivos tiver sido atualizado. Isso aumenta um pouco o
-tráfego por abertura e dispensa qualquer etapa de geração de versões.
-O histórico e os rascunhos continuam salvos no mesmo navegador.
+Os estilos são referenciados diretamente no HTML. Scripts defer são baixados
+em paralelo e executados na ordem necessária. Arquivos que não mudaram podem
+ser reaproveitados do cache; arquivos de cada revisão têm URLs identificadas
+pelo conteúdo. A página inicial já contém seu conteúdo visual, antes de iniciar os simulados.
+A abertura não espera uma consulta de atualização, não usa URLs
+aleatórias para baixar todos os arquivos e não faz recarga ao voltar pelo navegador.
 
-O .htaccess e o _headers reforçam as regras de cache nas hospedagens compatíveis.
-Envie-os junto com os demais arquivos. A pasta local continua funcionando offline.
-A consulta automática começa quando o navegador recebe esta versão. Uma cópia
-antiga já armazenada, anterior a esta correção, não contém esse código: apenas
-nessa transição pode ser necessário recarregar a página uma vez. Um cache de
-servidor/CDN que ignore parâmetros e force conteúdo antigo precisa ser corrigido
-na própria hospedagem.
+Uma consulta pequena a versao.json acontece em segundo plano, com revalidação.
+Se houver outra revisão e o usuário ainda não tiver começado a interagir, a página
+carrega a revisão nova uma vez. Durante uso ou em uma tela restaurada pelo botão
+Voltar, mostra um aviso Atualizar para preservar a atividade. Uma falha de rede
+nessa consulta não bloqueia a página. Há proteção contra recarga repetida durante
+uma publicação incompleta. O histórico e os rascunhos são mantidos.
+
+No GitHub Pages, aguarde a publicação do commit terminar. Substituir só o HTML
+ou só o CSS deixa a publicação misturada com scripts antigos: confira as pastas
+js, css, dados e assets e o arquivo versao.json. O .htaccess e o _headers só
+configuram servidores compatíveis; no GitHub Pages, não alteram os cabeçalhos.
+Uma cópia anterior já armazenada precisa receber este HTML para usar a lógica
+nova. A pasta completa também continua funcionando localmente sem internet.
 
 COBERTURA E ROSA AMPLIADA
 Cada meio permite informar S e calcular C ou informar C e calcular S = Wc/C.
@@ -187,3 +193,13 @@ norte/leste e − significa sul/oeste; sinal e letra contraditórios são rejeit
 O seletor só define o hemisfério quando não existe sinal nem letra no texto.
 Quando há indicação explícita, o seletor acompanha o texto e fica bloqueado.
 O DATUM também é exibido em graus/minutos/segundos no resultado e no relatório.
+
+IDENTIDADE E ACESSO NO CELULAR
+O cartão da página inicial mantém Abrir calculadora visível em telas pequenas.
+As barras superiores identificam simulados e calculadora de deriva. O símbolo
+anterior foi substituído pela miniatura assets/lsar-miniatura.png, com canal alfa.
+A foto original foi extraída do SVG enviado, sem alterar o SVG de origem.
+Recorte criado pela ferramenta integrada de edição de imagem (image_gen) e
+reduzido para miniatura. Prompt aplicado: extrair somente a lancha LSAR-02 da
+foto, preservando casco, cabine laranja, proporções e inscrições; remover céu,
+água, espuma e paisagem, com fundo transparente e sem moldura ou elementos novos.

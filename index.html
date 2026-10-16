@@ -5,93 +5,19 @@
 <meta name="theme-color" content="#0d273c"><title>Missão LSAR · Simulados TLSAR e CLSAR</title>
 
 
-<script type="application/json" id="lsar-assets">{"styles":["css/estilo.css","css/deriva.css"],"scripts":["dados/tlsar.js","dados/clsar.js","js/simulado.js"]}</script>
-<script>
-/* Carregamento automático: nenhum número de versão precisa ser mantido. */
-(() => {
-  'use strict';
-  const hosted = /^https?:$/.test(location.protocol);
-  const nonce = () => Date.now().toString(36) + Math.random().toString(36).slice(2);
-  const freshURL = (path, token) => {
-    const url = new URL(path, location.href);
-    url.searchParams.delete('v');
-    url.searchParams.set('_lsar', token);
-    return url.href;
-  };
-  // Só comparamos o HTML antes de inicializar os aplicativos e alterar a tela.
-  const signature = root => {
-    const copy = root.cloneNode(true);
-    copy.querySelectorAll('noscript').forEach(node => node.remove());
-    return copy.outerHTML;
-  };
-  const navigateFresh = () => location.replace(freshURL(location.href, nonce()));
-  const load = (path, style, bypass) => new Promise((resolve, reject) => {
-    const node = document.createElement(style ? 'link' : 'script');
-    if (style) node.rel = 'stylesheet';
-    else node.async = false;
-    node.onload = resolve;
-    node.onerror = () => {
-      node.remove();
-      // Permite o uso de uma cópia disponível se a rede cair durante a abertura.
-      if (bypass) load(path, style, false).then(resolve, reject);
-      else reject(new Error('Não foi possível carregar ' + path));
-    };
-    node[style ? 'href' : 'src'] = hosted && bypass ? freshURL(path, nonce()) : path;
-    document.head.append(node);
-  });
-  async function start() {
-    const initialHTML = signature(document.documentElement);
-    const assets = JSON.parse(document.getElementById('lsar-assets').textContent);
-    if (hosted) {
-      const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), 4000);
-      try {
-        const response = await fetch(freshURL(location.href, nonce()), {
-          cache: 'no-store', credentials: 'same-origin', signal: controller.signal
-        });
-        if (response.ok && (response.headers.get('Content-Type') || '').includes('text/html')) {
-          const latest = new DOMParser().parseFromString(await response.text(), 'text/html');
-          // Não segue respostas de erro, login ou uma página de outro aplicativo.
-          if (latest.getElementById('lsar-assets') && signature(latest.documentElement) !== initialHTML) {
-            navigateFresh();
-            return;
-          }
-        }
-      } catch (_) {
-        // Uma verificação indisponível não bloqueia o aplicativo local disponível.
-      } finally { clearTimeout(timer); }
-      const url = new URL(location.href);
-      if (url.searchParams.has('_lsar')) {
-        url.searchParams.delete('_lsar');
-        try { history.replaceState(history.state, '', url); } catch (_) {}
-      }
-    }
-    try {
-      await Promise.all(assets.styles.map(path => load(path, true, hosted)));
-      for (const path of assets.scripts) await load(path, false, hosted);
-      document.documentElement.removeAttribute('data-lsar-loading');
-    } catch (error) {
-      document.documentElement.removeAttribute('data-lsar-loading');
-      const box = document.createElement('p');
-      box.setAttribute('role', 'alert');
-      box.textContent = 'Não foi possível carregar a página. Confira a conexão e tente novamente. ';
-      const retry = document.createElement('button');
-      retry.textContent = 'Tentar novamente';
-      retry.onclick = hosted ? navigateFresh : () => location.reload();
-      box.append(retry);
-      document.body.prepend(box);
-    }
-  }
-  // Uma página restaurada pelo botão Voltar também consulta os arquivos atuais.
-  addEventListener('pageshow', event => { if (hosted && event.persisted) navigateFresh(); });
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, {once:true});
-  else start();
-})();
-</script>
+
+<script type="application/json" id="lsar-assets">{}</script>
+<meta name="lsar-build" content="801a3487537f7150">
+<link rel="stylesheet" href="css/estilo.css?v=c910ab9c70e320dc">
+<link rel="stylesheet" href="css/deriva.css?v=67ccb4c677a03c0f">
+<script defer src="dados/tlsar.js?v=036861a69a16cc3c"></script>
+<script defer src="dados/clsar.js?v=e87bd07e29fe7a9b"></script>
+<script defer src="js/simulado.js?v=31dc718211c1d04c"></script>
+<script defer src="js/atualizacao.js?v=dd35f790c98cd757"></script>
 </head>
 <body>
-<header><div class="brand"><svg class="logo" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M20 5V35M5 20H35M20 10L24 24L20 21L16 24Z" fill="currentColor" stroke="currentColor" stroke-width="1.5"/></svg><div><strong>MISSÃO LSAR</strong><small id="course-header">Simulados · TLSAR e CLSAR</small></div></div><span class="offline">Funciona offline</span></header>
-<main id="app"></main>
+<header><div class="brand"><img class="logo lsar-logo" src="assets/lsar-miniatura.png?v=c22e51be45986b50" alt="Lancha de busca e salvamento LSAR-02" width="82" height="58" decoding="async" fetchpriority="high"><div><strong>MISSÃO LSAR</strong><small id="course-header">Simulados TLSAR e CLSAR · Calculadora de deriva</small></div></div><span class="offline">Funciona offline</span></header>
+<main id="app"><div class="initial-home" aria-busy="true"><section class="course-intro"><p class="eyebrow">Dois cursos. Uma missão.</p><h1 tabindex="-1" data-focus="">Qual curso você<br>quer praticar?</h1><p class="muted">Escolha o curso para começar ou retomar seu simulado. Responda uma pergunta por vez e acompanhe sua evolução.</p></section><section class="course-grid" aria-label="Escolha do curso"><button disabled class="course-card" data-course="tlsar"><span class="course-kicker">C-EXP-TLSAR</span><strong class="course-name">TLSAR</strong><span class="course-desc">Tripulante de Lancha SAR</span><span class="course-topics">Aspectos operativos, navegação, propulsão, comunicações, emergência, EPI, VHF e GRO.</span><span class="course-count">159 questões · 8 assuntos</span><span class="course-saved muted">Pronto para começar</span><span class="course-cta">Acessar TLSAR →</span></button><button disabled class="course-card" data-course="clsar"><span class="course-kicker">C-EXP-CLSAR</span><strong class="course-name">CLSAR</strong><span class="course-desc">Condutor de Lancha SAR</span><span class="course-topics">Fundamentos do serviço SAR, organização, meios e prontidão, mensagens e sistemas de alerta.</span><span class="course-count">128 questões · 4 assuntos</span><span class="course-saved muted">Pronto para começar</span><span class="course-cta">Acessar CLSAR →</span></button></section><a class="tool-card" href="deriva.html"><div><span class="eyebrow">Ferramentas SAR</span><strong>Deriva, DATUM e área de busca <span class="beta-badge">Beta</span></strong><p>Calculadora em fase de testes: deriva por corrente e leeway, DATUM a partir do LKP e dimensionamento da área de busca.</p></div><span class="tool-cta">Abrir calculadora →</span></a><div class="course-rules"><strong>As mesmas regras nos dois cursos</strong><p>Correção imediata com explicação e referência. Questões confirmadas ficam bloqueadas; questões puladas podem ser retomadas. Ao concluir, sua nota vai de 0 a 10.</p></div><p class="save-notice">Cada curso mantém seu próprio progresso e último resultado neste navegador. Uma nova tentativa substitui a anterior do mesmo curso.</p></div></main>
 <footer><span id="course-footnote">Escolha um curso para consultar seus assuntos e materiais.</span><br>Os slides orientam o estudo; consulte os manuais para a operação real, conforme destacado nas aulas.
 <details><summary>Materiais utilizados</summary><ul id="source-list"></ul><p>As páginas indicadas nas correções correspondem à ordem das páginas de cada PDF. Nenhuma nota mínima de aprovação oficial foi presumida.</p></details></footer>
 <dialog id="confirm-dialog" aria-labelledby="dialog-title"><h3 id="dialog-title"></h3><p id="dialog-text"></p><div class="actions"><button class="btn secondary" id="cancel-dialog">Cancelar</button><button class="btn" id="accept-dialog">Continuar</button></div></dialog>
