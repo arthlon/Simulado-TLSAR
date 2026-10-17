@@ -63,10 +63,58 @@
   }
   return {type,name:names[type],rect,points,legs,distance,time:distance/speed,budget,speed,spacing,radius,reason,finished:!halt,area:r.area};
  }
+ function coordinated(aircraft,ship,side,options={}){
+  positive(side,'Lado da área');
+  if(aircraft.id===ship.id)throw Error('Escolha meios diferentes para aeronave e navio.');
+  const va=positive(aircraft.result.speed,'Velocidade da aeronave'),s=positive(aircraft.result.spacing,'S da aeronave');
+  const ta=positive(aircraft.result.time,'Tempo da aeronave'),ts=positive(ship.result.time,'Tempo do navio');
+  const suppliedVs=positive(ship.result.speed,'Velocidade informada do navio'),heading=Number(options.heading??0);
+  if(!Number.isFinite(heading)||heading<0||heading>=360)throw Error('Rumo do navio: use 0 até menos de 360°V.');
+  const angle=heading*Math.PI/180,sin=Math.sin(angle),cos=Math.cos(angle),extent=side/(Math.abs(sin)+Math.abs(cos));
+  const mode=options.speedMode||'required';if(!['required','fixed'].includes(mode))throw Error('Selecione como coordenar a velocidade do navio.');
+  let length,vs;
+  if(mode==='fixed'){
+   if(suppliedVs>=va)throw Error('No CSC, a velocidade do navio deve ser menor que a da aeronave.');
+   vs=suppliedVs;length=s*(va/vs-1);
+  }else{length=positive(Number(options.legLength||extent),'Comprimento L');vs=s*va/(length+s);}
+  positive(length,'Comprimento L');positive(vs,'Velocidade coordenada do navio');
+  if(length>extent+EPS)throw Error('O comprimento L não cabe na área neste rumo (máximo '+extent.toLocaleString('pt-BR',{maximumFractionDigits:3})+' MN). Ajuste o modo, o rumo ou os dados dos meios.');
+  const phase=vs*length/(2*va),tracks=Math.floor((extent-2*phase)/s+EPS)+1;
+  if(tracks<1)throw Error('Não há espaço para iniciar os dois meios dentro da área.');
+  if(tracks>1000)throw Error('Mais de 1.000 pernadas CSC seriam necessárias. Aumente S ou reduza a área.');
+  const first=-(tracks-1)*s/2,shipStart=first-phase;
+  const fullTime=(tracks*length+(tracks-1)*s)/va,time=Math.min(ta,ts,fullTime);
+  const reason=time<fullTime-EPS?'Tempo comum dos dois meios atingido':'Faixa CSC concluída';
+  const xy=(axis,cross)=>({x:axis*sin+cross*cos,y:axis*cos-cross*sin});
+  const rect={west:-side/2,east:side/2,south:-side/2,north:side/2};
+  const make=(speed,spacing,unit)=>({type:'CSC',name:'Pente coordenado (CSC)',rect,points:[],legs:[],distance:0,time,fullTime,budget:speed*Math.min(ta,ts),speed,spacing,reason,finished:time>=fullTime-EPS,area:unit.result.area});
+  const airPlan=make(va,s,aircraft),shipPlan=make(vs,ship.result.spacing,ship);let elapsed=0;
+  const append=(plan,a,b,speed,kind,partial=false)=>{
+   const distance=Math.hypot(b.x-a.x,b.y-a.y);if(distance<EPS)return;
+   plan.points.push(b);plan.legs.push({from:a,to:b,distance,heading:M.normalize(Math.atan2(b.x-a.x,b.y-a.y)*180/Math.PI),time:distance/speed,kind,partial});plan.distance+=distance;
+  };
+  airPlan.points.push(xy(first,-length/2));
+  for(let i=0;i<tracks&&elapsed<time-EPS;i++){
+   const axis=first+i*s,target=xy(axis,i%2===0?length/2:-length/2),a=airPlan.points[airPlan.points.length-1],duration=length/va;
+   const fraction=Math.min(1,(time-elapsed)/duration),end={x:a.x+(target.x-a.x)*fraction,y:a.y+(target.y-a.y)*fraction};
+   append(airPlan,a,end,va,'busca',fraction<1-EPS);elapsed+=duration*fraction;
+   if(fraction<1-EPS||i===tracks-1||elapsed>=time-EPS)break;
+   const b=xy(axis+s,i%2===0?length/2:-length/2),start=airPlan.points[airPlan.points.length-1],crossTime=s/va,ratio=Math.min(1,(time-elapsed)/crossTime);
+   append(airPlan,start,{x:start.x+(b.x-start.x)*ratio,y:start.y+(b.y-start.y)*ratio},va,'ligação',ratio<1-EPS);elapsed+=crossTime*ratio;
+  }
+  const start=xy(shipStart,0),end=xy(shipStart+vs*time,0);shipPlan.points.push(start);append(shipPlan,start,end,vs,'busca',time<fullTime-EPS);
+  const crossings=[];
+  for(let i=0;i<tracks;i++){
+   const at=(length/2+i*(length+s))/va;if(at>time+EPS)break;
+   crossings.push({time:at,point:xy(first+i*s,0),leg:2*i+1});
+  }
+  if([...airPlan.points,...shipPlan.points].some(p=>!inside(p,rect)))throw Error('O traçado coordenado ultrapassaria a área. Confira L, S e o rumo.');
+  return {airPlan,shipPlan,crossings,va,vs,s,length,suppliedVs,heading,mode,time,fullTime,extent,tracks,phase,reason};
+ }
  function geographic(point,datum,reference=datum.longitude){
   const distance=Math.hypot(point.x,point.y),bearing=M.normalize(Math.atan2(point.x,point.y)*180/Math.PI),p=M.rhumbDestination(datum.latitude,datum.longitude,distance,bearing);
   if(Math.abs(p.latitude)>85.05112878)throw Error('O traçado ultrapassa a latitude disponível no mapa.');
   return [p.latitude,p.longitude+360*Math.round((reference-p.longitude)/360)];
  }
- const api=Object.freeze({names,partition,generate,geographic,inside});root.SARSearchPlans=api;if(typeof module!=='undefined'&&module.exports)module.exports=api;
+ const api=Object.freeze({names,partition,generate,coordinated,geographic,inside});root.SARSearchPlans=api;if(typeof module!=='undefined'&&module.exports)module.exports=api;
 })(typeof window!=='undefined'?window:globalThis);

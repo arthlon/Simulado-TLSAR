@@ -14,7 +14,7 @@
  function save(){try{localStorage.setItem(KEY,JSON.stringify({version:1,drift:rawDrift(),units:rawUnits()}));}catch{storageOK=false;$('storage-note').textContent='O navegador não permitiu salvar os dados desta calculadora. Mantenha a página aberta até terminar.';}}
  function mapState(){
   let lkp=null;try{lkp={latitude:M.parseCoordinate($('lkpLatitude').value,'lat',$('lkpFormat').value,$('lkpLatHem').value),longitude:M.parseCoordinate($('lkpLongitude').value,'lon',$('lkpFormat').value,$('lkpLonHem').value)};}catch{}
-  return {lkp,drift:lastDrift?structuredClone(lastDrift.result):null,search:lastSearch?structuredClone({...lastSearch.total,units:lastSearch.units.map((u,i)=>({id:String(i+1),name:u.name,result:u.result}))}):null};
+  return {lkp,drift:lastDrift?structuredClone(lastDrift.result):null,search:lastSearch?structuredClone({...lastSearch.total,units:lastSearch.units.map((u,i)=>({id:String(i+1),name:u.name,platform:u.raw.platform,result:u.result}))}):null};
  }
  function updateExport(){$('export-report').disabled=!lastDrift&&!lastSearch;document.dispatchEvent(new CustomEvent('lsar:map-state',{detail:mapState()}));}
  window.SARCalculatorMap=Object.freeze({getState:mapState,setLKP(latitude,longitude){

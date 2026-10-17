@@ -233,3 +233,17 @@ PLANOS DE BUSCA E MAPA EM NOVA ABA
 9. Cartas publicadas podem ser selecionadas em ambas as abas. GeoTIFFs locais precisam ser selecionados novamente na aba ampliada; o arquivo não é enviado ao servidor nem gravado no histórico.
 10. Na nova aba, o LKP é somente leitura: modifique-o pela calculadora. A área continua centrada no DATUM. As posições dos traçados usam a mesma aproximação local em esfera do mapa.
 Publique todos os arquivos, incluindo mapa.html, js/planos-busca.js e js/mapa-estado.js. O versionamento foi estendido à nova página.
+
+PENTE COORDENADO — CSC
+1. Calcule exatamente dois meios: um navio e uma aeronave. Para a aeronave, informe S, V (Va) e T da busca. Para o navio, informe sua velocidade planejada e T.
+2. Calcule também a deriva com LKP para obter o DATUM.
+3. No mapa, em Organização da busca, selecione Pente coordenado (CSC). Confirme quem é o navio e quem é a aeronave: são funções explícitas do plano, não dois padrões individuais.
+4. Defina o rumo de avanço do navio. A aeronave pesquisa perpendicularmente a esse rumo, usando o S da aeronave.
+5. Escolha o modo de sincronização:
+   - Informar L → calcular Vs: Vs = S × Va / (L + S). L em branco usa o lado do retângulo inscrito na área. Vs calculada é usada somente no plano CSC e comparada com a velocidade originalmente informada do navio. Os campos e a área nominal anteriores não são alterados.
+   - Manter Vs → calcular L: L = S × (Va / Vs − 1). É necessário Vs < Va e L caber na área. Ajuste os dados ou o modo se não couber.
+6. O retângulo do CSC é inscrito no quadrado centrado no DATUM, para manter os dois traçados dentro da área mesmo em rumos oblíquos. Não há subáreas independentes para os integrantes do par. A sincronização usa uma defasagem inicial: o navio começa atrás da linha da primeira pernada, passando sobre o eixo da aeronave exatamente no meio de cada travessia no modelo.
+7. O plano usa no máximo o menor T dos dois meios e termina antes se concluir a faixa. Os relatórios mostram CSP de cada meio, velocidade efetivamente usada, distâncias, tempos e instantes dos encontros. Pode haver parada numa pernada ou ligação parcial.
+8. O controle Encontros navio–aeronave mostra/oculta os pontos de encontro. A visibilidade por meio, o modo avaliação e a sincronização com a aba ampliada se aplicam também ao CSC.
+Hipóteses: velocidades constantes, sem vento sobre a aeronave, corrente, raio de giro ou atraso nas curvas; início conjunto a partir dos CSP calculados. A fórmula IAMSAR utiliza a velocidade aerodinâmica verdadeira (TAS); neste desenho idealizado ela é tratada como igual à velocidade sobre o solo. O plano não verifica desempenho ou capacidade dos meios. O coordenador SAR deve definir as condições de execução.
+A área At já calculada continua nominal: a participação coordenada dos dois meios não equivale a duas áreas geográficas independentes. O CSC não aumenta nem recalcula a área do quadrado automaticamente.
