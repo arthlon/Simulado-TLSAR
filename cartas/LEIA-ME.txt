@@ -50,3 +50,6 @@ python3 ferramentas/atualizar_versao.py
 5. BIBLIOTECAS
 Leaflet 1.9.4 (BSD-2-Clause), georaster 1.6.0 e georaster-layer-for-leaflet 3.10.0 (Apache-2.0). Cópias e licenças em vendor/. Leaflet é carregado somente ao abrir o mapa; os leitores de GeoTIFF somente ao selecionar uma carta local.
 Mapa base: OpenStreetMap, com créditos visíveis e requisições normais de tiles. Não há download em massa, pré-carregamento offline ou raspagem do mapa base. Política: https://operations.osmfoundation.org/policies/tiles/
+
+6. PLANOS DE BUSCA
+Os padrões são configurados por meio após os cálculos da calculadora. Veja a seção PLANOS DE BUSCA E MAPA EM NOVA ABA do LEIA-ME.txt na raiz do pacote. A carta e os planos são camadas independentes: podem ser mostrados/ocultados separadamente. Na aba ampliada, selecione novamente qualquer GeoTIFF local.

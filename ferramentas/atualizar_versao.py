@@ -9,7 +9,7 @@ for page in root.glob('*.html'):
   if not p.is_file():raise FileNotFoundError(p)
   return match[1]+path+'?v='+hashlib.sha256(p.read_bytes()).hexdigest()[:16]+match[3]
  text=re.sub(r'((?:src|href)=")([^"\s]+\.(?:css|js|png)(?:\?v=[a-f0-9]+)?)(")',asset,text)
- text=re.sub(r'(href="(?:index|deriva)\.html)(?:\?v=(?:[a-f0-9]+|__LSAR_BUILD__))?(")',r'\g<1>?v=__LSAR_BUILD__\2',text)
+ text=re.sub(r'(href="(?:index|deriva|mapa)\.html)(?:\?v=(?:[a-f0-9]+|__LSAR_BUILD__))?(")',r'\g<1>?v=__LSAR_BUILD__\2',text)
  text=re.sub(r'(<meta name="lsar-build" content=")[^"]+(">)',r'\g<1>__LSAR_BUILD__\2',text)
  page.write_text(text)
 digest=hashlib.sha256()

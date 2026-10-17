@@ -4,12 +4,12 @@
  if(!/^https?:$/.test(location.protocol))return;
  const build=document.querySelector('meta[name="lsar-build"]')?.content;
  if(!build)return;
- // Links between the two pages use the current release, avoiding cached old HTML.
+ // Links between application pages use the current release, avoiding cached old HTML.
  document.addEventListener('click',event=>{
   const anchor=event.target.closest?.('a[href]');if(!anchor||anchor.hasAttribute('download'))return;
   const href=anchor.getAttribute('href');if(!href||href.startsWith('#'))return;
   const url=new URL(href,document.baseURI);
-  if(url.origin!==location.origin||!/(?:^|\/)(?:index|deriva)\.html$/.test(url.pathname))return;
+  if(url.origin!==location.origin||!/(?:^|\/)(?:index|deriva|mapa)\.html$/.test(url.pathname))return;
   url.searchParams.set('v',build);anchor.href=url.href;
  },true);
  let active=false,busy=false,lastCheck=0;

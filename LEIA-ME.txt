@@ -217,3 +217,19 @@ os dados salvos. Quando o JavaScript está desativado, vale o aviso da página.
 
 MAPA E CARTAS NÁUTICAS (BETA)
 Na calculadora, a seção Mapa da deriva carrega o mapa somente quando solicitada. É possível selecionar LKP com confirmação, ver DATUM e deslocamento calculado e a área quadrada nominal. GeoTIFFs locais são lidos no dispositivo; cartas KAP/GeoTIFF podem ser preparadas em tiles para publicação. Veja cartas/LEIA-ME.txt e ferramentas/converter_carta.py. Nenhuma carta real foi incluída. Mantenha a pasta vendor e suas licenças no pacote. O restante da calculadora e os simulados continuam independentes do mapa.
+
+PLANOS DE BUSCA E MAPA EM NOVA ABA
+1. Calcule a deriva com LKP e depois a área nominal de cada meio.
+2. Abra o mapa. Em Planos de busca por meio, escolha o padrão de cada meio:
+   PS: rotas paralelas ao lado maior da subárea; CS: varredura pelo lado menor.
+   SS: quadrado crescente, saída do DATUM, S/S/2S/2S..., guinadas a boreste.
+   VS: setores na variante com saída do DATUM (USCG), uma ou duas passagens.
+3. PS/CS distribuem o quadrado centrado no DATUM em faixas de oeste para leste, proporcionais às áreas Ai. Cada meio mantém S, V e T próprios. SS/VS ficam disponíveis para um único meio nesta versão.
+4. Para SS/VS, confira e ajuste o rumo inicial (padrão: direção da deriva no primeiro uso). No VS, o raio é específico; ele não é o espaçamento S. O raio padrão é R, limitado ao quadrado.
+5. O percurso usa no máximo V×T, incluindo ligações entre pernadas. O traçado pode terminar antes de completar a área, inclusive numa ligação. O quadro informa o motivo e a última pernada parcial. Curvas são idealizadas, sem raio de giro; o deslocamento até o CSP e a deriva durante a busca não são incluídos. A área nominal não é substituída por uma suposta área efetivamente coberta pelo desenho.
+6. Ao lado do mapa, escolha LKP, DATUM, deriva, área, subáreas, planos, rótulos e valores. Os traçados também podem ser ocultados por meio.
+7. Modo avaliação oculta rótulos, valores em balões e os quadros com cálculos e parâmetros dos planos. Os desenhos escolhidos permanecem. Essa apresentação não bloqueia acesso aos dados pela calculadora; use a nova aba para exibir somente o mapa.
+8. Abrir em nova aba mostra mapa.html com mais espaço. A calculadora compartilha o último cálculo e atualizações pelo armazenamento do mesmo navegador/origem. Padrões, visibilidade e opções de avaliação são compartilhados entre as abas. Com armazenamento bloqueado, a página informa que não conseguiu compartilhar. Não há sincronização entre dispositivos.
+9. Cartas publicadas podem ser selecionadas em ambas as abas. GeoTIFFs locais precisam ser selecionados novamente na aba ampliada; o arquivo não é enviado ao servidor nem gravado no histórico.
+10. Na nova aba, o LKP é somente leitura: modifique-o pela calculadora. A área continua centrada no DATUM. As posições dos traçados usam a mesma aproximação local em esfera do mapa.
+Publique todos os arquivos, incluindo mapa.html, js/planos-busca.js e js/mapa-estado.js. O versionamento foi estendido à nova página.
