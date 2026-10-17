@@ -10,11 +10,11 @@ dados/clsar.js   128 perguntas CLSAR e suas referências.
 COMO USAR NO COMPUTADOR
 1. Extraia todos os arquivos do ZIP para uma pasta.
 2. Abra index.html em um navegador com JavaScript habilitado.
-3. Mantenha as subpastas css, js e dados junto de index.html.
+3. Mantenha todos os arquivos e subpastas do pacote junto de index.html.
 O simulado não depende de internet, bibliotecas externas ou instalação.
 
 COMO HOSPEDAR
-Envie index.html e as três subpastas para a mesma pasta da hospedagem.
+Envie todos os arquivos e subpastas do pacote para a mesma pasta da hospedagem.
 Publique o conteúdo extraído; não envie apenas index.html ou apenas o ZIP.
 A página inicial é index.html. Não é necessário configurar banco de dados.
 
@@ -214,3 +214,6 @@ para evitar abrir um HTML antigo na navegação normal. A volta do navegador
 continua sem recarga forçada. Se um arquivo essencial falhar ou a montagem
 exceder 12 segundos, aparece uma mensagem para tentar novamente, preservando
 os dados salvos. Quando o JavaScript está desativado, vale o aviso da página.
+
+MAPA E CARTAS NÁUTICAS (BETA)
+Na calculadora, a seção Mapa da deriva carrega o mapa somente quando solicitada. É possível selecionar LKP com confirmação, ver DATUM e deslocamento calculado e a área quadrada nominal. GeoTIFFs locais são lidos no dispositivo; cartas KAP/GeoTIFF podem ser preparadas em tiles para publicação. Veja cartas/LEIA-ME.txt e ferramentas/converter_carta.py. Nenhuma carta real foi incluída. Mantenha a pasta vendor e suas licenças no pacote. O restante da calculadora e os simulados continuam independentes do mapa.

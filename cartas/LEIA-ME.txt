@@ -1,0 +1,52 @@
+CARTAS NÁUTICAS NO MAPA — MISSÃO LSAR
+
+1. ABRIR UM GEOTIFF DO DISPOSITIVO
+Na calculadora: Mapa da deriva → Abrir mapa → Carregar carta do dispositivo.
+Selecione .tif, .tiff ou .geotiff georreferenciado. Limites desta versão:
+- até 40 MB e 12 milhões de pixels;
+- TIFF clássico, até quatro bandas de 8 bits sem sinal (imagem, não modelo de elevação);
+- projeção identificada por código EPSG;
+- imagem orientada para o norte, sem rotação;
+- extensão dentro de ±85,05° de latitude e sem atravessar o antimeridiano.
+Cartas fora dessas condições devem ser convertidas em tiles.
+A carta fica apenas na memória do dispositivo, não é enviada ao servidor nem salva no histórico. Selecione-a novamente após fechar/recarregar a página.
+O mapa base precisa de internet. As bibliotecas do mapa estão no pacote, portanto a carta local pode ser aberta também com o mapa base desligado, sem depender de um CDN.
+
+2. PREPARAR KAP OU GEOTIFF PARA PUBLICAR
+O navegador não abre .KAP diretamente. A conversão é feita no computador, uma vez, antes de publicar. Use apenas cartas cuja distribuição seja permitida pela fonte.
+É necessário Python 3 e GDAL com suporte BSB/KAP e bindings Python. Ferramentas: gdalinfo, gdal_translate, gdalwarp e gdal2tiles.py (ou python -m osgeo_utils.gdal2tiles).
+Com o terminal na pasta do site:
+
+python3 ferramentas/converter_carta.py "/caminho/carta.kap" --id vitoria-1401 --nome "Carta de Vitória" --creditos "Fonte e edição da carta" --zoom 8-15
+
+Também aceita GeoTIFF. Comece com uma carta e uma faixa de zoom moderada: níveis altos geram muitos arquivos. A ferramenta gera tiles XYZ PNG em EPSG:3857, atualiza cartas/catalogo.json e renova a versão do pacote. Um id existente não é sobrescrito; use outro id para uma edição nova. Preserve uma cópia do site antes de converter.
+Publique os arquivos atualizados, incluindo toda a pasta cartas/id-da-carta/. Não publique somente o catálogo. A carta passa a aparecer no seletor “Carta disponível no site”. Cartas preparadas são carregadas por região e escala visualizadas.
+A conversão não substitui a conferência do georreferenciamento. Confira pontos conhecidos, datum geodésico, edição, escala e alinhamento antes de usar a sobreposição. O exemplo não inclui uma carta náutica real.
+
+3. CATÁLOGO
+cartas/catalogo.json começa vazio. Para tiles XYZ já existentes, cada entrada de charts segue este esquema (valores ilustrativos; não copie como carta real):
+{
+  "id": "minha-carta",
+  "name": "Nome da carta",
+  "url": "cartas/minha-carta/{z}/{x}/{y}.png",
+  "bounds": [-20.6, -40.6, -20.0, -40.0],
+  "minZoom": 8,
+  "maxZoom": 15,
+  "version": "edicao-1",
+  "attribution": "Fonte e créditos"
+}
+A ordem de bounds é [sul, oeste, norte, leste], em graus WGS84. Os tiles devem usar a numeração XYZ (não TMS). Caminhos relativos à raiz do site; a camada também funciona em subpastas do GitHub Pages. Após alterações manuais, execute:
+python3 ferramentas/atualizar_versao.py
+
+4. MAPA DA MISSÃO
+- Escolher LKP no mapa abre um modo de seleção; o ponto só substitui os campos ao confirmar no balão.
+- Selecionar um ponto mantém o horário próprio do LKP existente: confira esse horário.
+- Alterar os dados de deriva remove o DATUM antigo até um novo cálculo.
+- Alterar dados da busca remove o quadrado até um novo cálculo.
+- A linha LKP–DATUM segue o mesmo modelo por rumo constante da calculadora.
+- O quadrado é uma aproximação local, orientado pelo norte verdadeiro, com lado √At e centrado no DATUM. Não é uma margem de erro nem um padrão de pernadas.
+- Polos e extensões que ultrapassem a projeção Web Mercator não são exibidos.
+
+5. BIBLIOTECAS
+Leaflet 1.9.4 (BSD-2-Clause), georaster 1.6.0 e georaster-layer-for-leaflet 3.10.0 (Apache-2.0). Cópias e licenças em vendor/. Leaflet é carregado somente ao abrir o mapa; os leitores de GeoTIFF somente ao selecionar uma carta local.
+Mapa base: OpenStreetMap, com créditos visíveis e requisições normais de tiles. Não há download em massa, pré-carregamento offline ou raspagem do mapa base. Política: https://operations.osmfoundation.org/policies/tiles/

@@ -12,7 +12,16 @@
  function rawDrift(){return Object.fromEntries(fields.map(id=>[id,$(id).value]));}
  function rawUnits(){return [...$('units').querySelectorAll('.unit-card')].map(c=>Object.fromEntries(unitFields.map(k=>[k,val(c,k)])));}
  function save(){try{localStorage.setItem(KEY,JSON.stringify({version:1,drift:rawDrift(),units:rawUnits()}));}catch{storageOK=false;$('storage-note').textContent='O navegador não permitiu salvar os dados desta calculadora. Mantenha a página aberta até terminar.';}}
- function updateExport(){$('export-report').disabled=!lastDrift&&!lastSearch;}
+ function mapState(){
+  let lkp=null;try{lkp={latitude:M.parseCoordinate($('lkpLatitude').value,'lat',$('lkpFormat').value,$('lkpLatHem').value),longitude:M.parseCoordinate($('lkpLongitude').value,'lon',$('lkpFormat').value,$('lkpLonHem').value)};}catch{}
+  return {lkp,drift:lastDrift?structuredClone(lastDrift.result):null,search:lastSearch?structuredClone(lastSearch.total):null};
+ }
+ function updateExport(){$('export-report').disabled=!lastDrift&&!lastSearch;document.dispatchEvent(new CustomEvent('lsar:map-state',{detail:mapState()}));}
+ window.SARCalculatorMap=Object.freeze({getState:mapState,setLKP(latitude,longitude){
+  M.formatCoordinate(latitude,'lat');M.formatCoordinate(longitude,'lon');
+  $('lkpFormat').value='dd';$('lkpLatitude').value=latitude.toFixed(8);$('lkpLongitude').value=longitude.toFixed(8);$('lkpLatHem').value=latitude<0?'S':'N';$('lkpLonHem').value=longitude<0?'W':'E';
+  updateCoordinateHelp();syncCoordinatePreview();invalidate('drift');
+ }});
  function invalidate(section){if(section==='drift'){lastDrift=null;$('drift-result').hidden=true;$('drift-dirty').textContent='Dados alterados. Calcule para atualizar.';$('drift-error').textContent='';}else{lastSearch=null;$('search-result').hidden=true;$('search-dirty').textContent='Dados alterados. Calcule para atualizar.';$('search-error').textContent='';}updateExport();save();}
  function populateUnit(card,reset=false){
   const platform=val(card,'platform'),p=D.platforms[platform],isManual=platform==='manual';
