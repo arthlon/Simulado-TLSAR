@@ -3,7 +3,7 @@
  const $=id=>document.getElementById(id),M=window.SARDrift,G=window.SARMapGeometry,bridge=window.SARCalculatorMap,session=window.SARMapSession;
  if(!$('open-map')||!bridge)return;
  const build=document.querySelector('meta[name="lsar-build"]')?.content||'1';
- let state=bridge.getState(),planning=session?.readOptions()?.planning||{},map,layers,bounds;
+ let state=bridge.getState(),map,layers,bounds;
  const num=n=>n.toLocaleString('pt-BR',{maximumFractionDigits:3});
  const text=value=>{const p=document.createElement('p');p.textContent=value;return p;};
  const position=p=>M.formatCoordinate(p.latitude,'lat')+' · '+M.formatCoordinate(p.longitude,'lon');
@@ -19,7 +19,7 @@
    L.marker(point,{icon:icon('datum','D'),title:'DATUM na chegada'}).bindPopup(text('DATUM na chegada · '+position(d))).addTo(layers);
    message='LKP, DATUM e deslocamento estimado até a chegada.';
    if(state.search?.radius>0){
-    const angle=G.orientation(state,planning),r=state.search.radius,corners=G.square(d,state.search.side,point[1],angle);
+    const angle=0,r=state.search.radius,corners=G.square(d,state.search.side,point[1],angle);
     L.circle(point,{radius:r*1852,color:'#9361a5',weight:2,fill:false,dashArray:'6 4'}).bindPopup(text('R = '+num(r)+' MN · centro no DATUM · círculo inscrito no quadrado.')).addTo(layers);
     L.polygon(corners,{color:'#d28a20',fillColor:'#e4aa40',fillOpacity:.08,weight:2}).bindPopup(text('Área nominal dos meios independentes: '+num(state.search.area)+' MN² · lado '+num(state.search.side)+' MN · eixo '+num(angle)+'°V.')).addTo(layers);
     corners.forEach(p=>bounds.extend(p));message+=' R = '+num(r)+' MN; lado = '+num(state.search.side)+' MN; eixo = '+num(angle)+'°V.';
@@ -49,5 +49,5 @@
  $('map-new-tab').href='mapa.html?v='+build;
  $('map-new-tab').onclick=event=>{if(!session?.publish(state)){event.preventDefault();$('map-load-status').textContent='Permita armazenamento neste navegador para compartilhar os cálculos com a nova aba.';}};
  document.addEventListener('lsar:map-state',event=>{state=event.detail;render(true);});
- document.addEventListener('lsar:map-options',event=>{planning=event.detail?.planning||{};render();});
+
 })();

@@ -86,15 +86,17 @@
   const suppliedVs=positive(ship.result.speed,'Velocidade informada do navio'),heading=Number(options.heading??0);
   if(!Number.isFinite(heading)||heading<0||heading>=360)throw Error('Rumo do navio: use 0 até menos de 360°V.');
   const angle=(heading-Number(options.areaHeading||0))*Math.PI/180,sin=Math.sin(angle),cos=Math.cos(angle),extent=side/(Math.abs(sin)+Math.abs(cos));
+  const availableLeg=extent-s;
+  if(availableLeg<=EPS)throw Error('S não cabe na área com margem de S/2. Reveja o espaçamento ou a área.');
   const mode=options.speedMode||'required';if(!['required','fixed'].includes(mode))throw Error('Selecione como coordenar a velocidade do navio.');
   let length,vs;
   if(mode==='fixed'){
    if(suppliedVs>=va)throw Error('No CSC, a velocidade do navio deve ser menor que a da aeronave.');
    vs=suppliedVs;length=s*(va/vs-1);
-  }else{length=positive(Number(options.legLength||extent),'Comprimento L');vs=s*va/(length+s);}
+  }else{length=positive(Number(options.legLength||availableLeg),'Comprimento L');vs=s*va/(length+s);}
   positive(length,'Comprimento L');positive(vs,'Velocidade coordenada do navio');
-  if(length>extent+EPS)throw Error('O comprimento L não cabe na área neste rumo (máximo '+extent.toLocaleString('pt-BR',{maximumFractionDigits:3})+' MN). Ajuste o modo, o rumo ou os dados dos meios.');
-  const phase=vs*length/(2*va),tracks=Math.floor((extent-2*phase)/s+EPS)+1;
+  if(length>availableLeg+EPS)throw Error('O comprimento L não cabe na área neste rumo com margem S/2 (máximo '+availableLeg.toLocaleString('pt-BR',{maximumFractionDigits:3})+' MN). Ajuste o modo, o rumo ou os dados dos meios.');
+  const phase=vs*length/(2*va),tracks=Math.floor((extent-s)/s+EPS)+1;
   if(tracks<1)throw Error('Não há espaço para iniciar os dois meios dentro da área.');
   if(tracks>1000)throw Error('Mais de 1.000 pernadas CSC seriam necessárias. Aumente S ou reduza a área.');
   const first=-(tracks-1)*s/2,shipStart=first-phase;
@@ -114,7 +116,7 @@
    crossings.push({time:at,point:xy(first+i*s,0),leg:2*i+1});
   }
   if([...airPlan.points,...shipPlan.points].some(p=>!inside(p,rect)))throw Error('O traçado coordenado ultrapassaria a área. Confira L, S e o rumo.');
-  return {airPlan,shipPlan,crossings,va,vs,s,length,suppliedVs,heading,mode,time,fullTime,extent,tracks,phase,reason,nominal:coordinatedArea(aircraft,ship)};
+  return {airPlan,shipPlan,crossings,va,vs,s,length,suppliedVs,heading,mode,time,fullTime,extent,tracks,phase,reason,margin:(extent-length)/2,axisMargin:(extent-(tracks-1)*s)/2,nominal:coordinatedArea(aircraft,ship)};
  }
  function geographic(point,datum,reference=datum.longitude){
   const distance=Math.hypot(point.x,point.y),bearing=M.normalize(Math.atan2(point.x,point.y)*180/Math.PI),p=M.rhumbDestination(datum.latitude,datum.longitude,distance,bearing);
