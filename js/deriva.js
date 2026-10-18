@@ -210,7 +210,7 @@
  syncLeeway();updateCoordinateHelp();syncCoordinatePreview();
  $('lkpFormat').addEventListener('change',updateCoordinateHelp);
  $('clear-lkp').onclick=()=>{['lkpLatitude','lkpLongitude','lkpTime'].forEach(id=>$(id).value='');syncCoordinatePreview();invalidate('drift');};
- $('drift-form').addEventListener('submit',computeDrift);$('search-form').addEventListener('submit',e=>{computeSearch(e);if(lastSearch)document.dispatchEvent(new Event('lsar:show-map'));});
+ $('drift-form').addEventListener('submit',computeDrift);$('search-form').addEventListener('submit',computeSearch);
  $('drift-form').addEventListener('input',()=>{syncLeeway();syncCoordinatePreview();invalidate('drift');});$('drift-form').addEventListener('change',()=>{syncLeeway();syncCoordinatePreview();invalidate('drift');});
  $('search-form').addEventListener('input',e=>{const card=e.target.closest('.unit-card');if(!card)return;syncSpacing(card);invalidate('search');});
  $('search-form').addEventListener('change',e=>{const card=e.target.closest('.unit-card');if(!card)return;const key=e.target.dataset.field;if(['platform','object','visibility','weather'].includes(key))populateUnit(card,key==='platform');syncSpacing(card);invalidate('search');});

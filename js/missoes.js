@@ -15,7 +15,6 @@
  document.body.classList.add('workspace-ready');view(location.hash.slice(1));
  document.addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]');if(!a)return;const id=a.getAttribute('href').slice(1);if(!panels.some(p=>p.id===id))return;e.preventDefault();history.replaceState(null,'','#'+id);view(id,true);});
  addEventListener('hashchange',()=>view(location.hash.slice(1)));
- document.addEventListener('lsar:show-map',()=>{history.replaceState(null,'','#map-section');view('map-section',true);});
  function read(){
   const raw=localStorage.getItem(KEY);if(!raw)return [];
   const data=JSON.parse(raw);if(data?.version!==1||!Array.isArray(data.missions)||data.missions.length>MAX||!data.missions.every(valid))throw Error('O arquivo de missões neste navegador não pôde ser lido. Os dados existentes foram preservados.');
