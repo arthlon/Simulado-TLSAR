@@ -14,54 +14,69 @@
   if(dy>0)fraction=Math.min(fraction,(r.north-a.y)/dy);if(dy<0)fraction=Math.min(fraction,(r.south-a.y)/dy);
   return Math.max(0,Math.min(1,fraction));
  }
+ function consume(points,kinds,speed,productiveTime,maxTotal=Infinity,endReason='Padrão concluído'){
+  const result={points:[points[0]],legs:[],distance:0,searchDistance:0,linkDistance:0,time:0,searchTime:0,linkTime:0,budget:speed*productiveTime,reason:endReason,finished:true};
+  result.fullRequiredTime=0;result.fullSearchTime=0;result.fullLinkTime=0;
+  for(let i=1;i<points.length;i++){const t=Math.hypot(points[i].x-points[i-1].x,points[i].y-points[i-1].y)/speed;result.fullRequiredTime+=t;if(kinds[i-1]==='ligação')result.fullLinkTime+=t;else result.fullSearchTime+=t;}
+  for(let i=1;i<points.length;i++){
+   const a=points[i-1],target=points[i],kind=kinds[i-1],full=Math.hypot(target.x-a.x,target.y-a.y);if(full<EPS)continue;
+   const productiveRemaining=Math.max(0,productiveTime-result.searchTime),remaining=Math.max(0,maxTotal-result.time);
+   if(productiveRemaining<EPS){result.reason='Tempo produtivo disponível atingido';result.finished=false;break;}
+   const fraction=Math.min(1,remaining*speed/full,kind==='busca'?productiveRemaining*speed/full:Infinity);
+   if(fraction<EPS){result.reason='Limite de tempo total atingido';result.finished=false;break;}
+   const b={x:a.x+(target.x-a.x)*fraction,y:a.y+(target.y-a.y)*fraction},distance=full*fraction,time=distance/speed;
+   result.points.push(b);result.legs.push({from:a,to:b,distance,time,kind,heading:M.normalize(Math.atan2(b.x-a.x,b.y-a.y)*180/Math.PI),partial:fraction<1-EPS,startTime:result.time,endTime:result.time+time});
+   result.distance+=distance;result.time+=time;
+   if(kind==='busca'){result.searchDistance+=distance;result.searchTime+=time;}else{result.linkDistance+=distance;result.linkTime+=time;}
+   if(fraction<1-EPS){result.reason=kind==='busca'&&productiveRemaining<remaining?'Tempo produtivo disponível (pernada parcial)':'Limite de tempo total (pernada parcial)';result.finished=false;break;}
+  }
+  return result;
+ }
  function generate(unit,rect,options={},multiple=false){
-  const r=unit.result,type=options.type||'PS',spacing=positive(r.spacing,'S'),speed=positive(r.speed,'V'),time=positive(r.time,'T'),budget=positive(speed*time,'Percurso V × T');
+  const r=unit.result,type=options.type||'PS',spacing=positive(r.spacing,'S'),speed=positive(r.speed,'V'),productiveTime=positive(r.time,'T produtivo');
   if(!names[type])throw Error('Selecione um padrão válido.');
   if(multiple&&['SS','VS'].includes(type))throw Error('SS e VS exigem um único meio nesta versão. Use PS/CS para subáreas ou calcule somente um meio.');
-  const width=positive(rect.east-rect.west,'Largura'),height=positive(rect.north-rect.south,'Altura');
-  let points=[],legs=[],distance=0,reason='Padrão concluído',halt=false,radius=null;
-  const start=p=>{if(!inside(p,rect))throw Error('O início do padrão está fora da área.');points.push(p);};
-  function go(target,kind='busca'){
-   if(halt)return false;const a=points[points.length-1],dx=target.x-a.x,dy=target.y-a.y,full=Math.hypot(dx,dy);if(full<EPS)return true;
-   if(legs.length>=LIMIT){reason='Limite de 2.000 pernadas atingido; aumente S ou reduza o tempo/área.';halt=true;return false;}
-   const byArea=segmentExit(a,target,rect),remaining=Math.max(0,budget-distance),byTime=remaining/full,ratio=Math.min(1,byArea,byTime);
-   if(ratio<EPS){reason=byArea<=byTime?'Limite da área atingido':'Tempo disponível atingido';halt=true;return false;}
-   const b={x:a.x+dx*ratio,y:a.y+dy*ratio},length=full*ratio,heading=M.normalize(Math.atan2(dx,dy)*180/Math.PI);
-   points.push(b);distance+=length;legs.push({from:a,to:b,distance:length,heading,time:length/speed,kind,partial:ratio<1-EPS});
-   if(ratio<1-EPS){reason=byArea<=byTime?'Limite da área atingido (última pernada parcial)':'Tempo disponível atingido (última pernada parcial)';halt=true;return false;}
-   return true;
-  }
+  const width=positive(rect.east-rect.west,'Largura'),height=positive(rect.north-rect.south,'Altura'),maxTotal=options.maxTotalTime?M.hours(options.maxTotalTime,'Limite total do padrão'):Infinity;
+  const raw=[],kinds=[];let radius=null,endReason='Padrão concluído',edgeAdjusted=false;
+  const start=p=>{if(!inside(p,rect))throw Error('O início do padrão está fora da área.');raw.push(p);};
+  const go=(p,kind='busca')=>{const a=raw[raw.length-1];if(Math.hypot(a.x-p.x,a.y-p.y)<EPS)return;raw.push(p);kinds.push(kind);};
   if(type==='PS'||type==='CS'){
    const alongNorth=type==='PS'?height>=width:height<width,cross=alongNorth?width:height,along=alongNorth?height:width;
-   const tracks=Math.ceil(cross/spacing-EPS)||1;
-   if(tracks>LIMIT/2)throw Error('Mais de 1.000 linhas seriam necessárias. Aumente S ou reduza a área.');
-   const margin=(cross-(tracks-1)*spacing)/2,reverse=!!options.reverse;
-   const point=(i,high)=>alongNorth?{x:rect.west+margin+i*spacing,y:high?rect.north:rect.south}:{x:high?rect.east:rect.west,y:rect.north-margin-i*spacing};
-   start(point(0,reverse));
-   for(let i=0;i<tracks&&!halt;i++){
-    const high=(i%2===0)!==reverse;go(point(i,high));
-    if(i+1<tracks&&!halt)go(point(i+1,high),'ligação');
-   }
+   if(cross<spacing-EPS||along<=spacing+EPS)throw Error('S não cabe com recuo de S/2 nos dois lados do canto. Reduza S ou reveja a subárea.');
+   const count=Math.floor((cross-spacing)/spacing+EPS)+1;if(count>999)throw Error('Mais de 1.000 linhas seriam necessárias. Aumente S ou reduza a área.');
+   const offsets=Array.from({length:count},(_,i)=>spacing/2+i*spacing),last=cross-spacing/2;
+   if(last-offsets[offsets.length-1]>EPS){offsets.push(last);edgeAdjusted=true;}
+   const reverse=!!options.reverse;
+   const point=(offset,high)=>alongNorth?{x:rect.west+offset,y:high?rect.north-spacing/2:rect.south+spacing/2}:{x:high?rect.east-spacing/2:rect.west+spacing/2,y:rect.north-offset};
+   start(point(offsets[0],reverse));
+   offsets.forEach((offset,i)=>{const high=(i%2===0)!==reverse;go(point(offset,high));if(i+1<offsets.length)go(point(offsets[i+1],high),'ligação');});
   }else{
    const heading=Number(options.heading??0);if(!Number.isFinite(heading)||heading<0||heading>=360)throw Error('Rumo inicial: use 0 até menos de 360°V.');
    start({x:0,y:0});
    if(type==='SS'){
-    for(let i=0;i<LIMIT&&!halt;i++){
-     const course=(heading+i*90)*Math.PI/180,length=(Math.floor(i/2)+1)*spacing,a=points[points.length-1];
-     go({x:a.x+length*Math.sin(course),y:a.y+length*Math.cos(course)});
+    for(let i=0;i<LIMIT;i++){
+     const course=(heading+i*90)*Math.PI/180,length=(Math.floor(i/2)+1)*spacing,a=raw[raw.length-1],b={x:a.x+length*Math.sin(course),y:a.y+length*Math.cos(course)},f=segmentExit(a,b,rect);
+     go({x:a.x+(b.x-a.x)*f,y:a.y+(b.y-a.y)*f});
+     if(f<1-EPS){endReason='Limite da área atingido';break;}
+     if(i===LIMIT-1)endReason='Limite de 2.000 pernadas atingido';
     }
-    if(!halt)reason='Limite de 2.000 pernadas atingido.';
    }else{
     radius=positive(Number(options.radius??Math.min(width,height)/2),'Raio do setor');
     if(radius>Math.min(width,height)/2+EPS)throw Error('O raio do setor deve caber no quadrado (máximo: R).');
     const passes=Number(options.passes??1);if(![1,2].includes(passes))throw Error('Escolha uma ou duas passagens do setor.');
-    for(let pass=0;pass<passes&&!halt;pass++)for(const [i,factor] of [1,1,2,1,2,1,1].entries()){
-     const course=(heading+pass*30+i*120)*Math.PI/180,a=points[points.length-1];
-     if(!go({x:a.x+factor*radius*Math.sin(course),y:a.y+factor*radius*Math.cos(course)}))break;
+    // Split diameter crossings at DATUM: nine radius-length legs, 9r per pass.
+    for(let pass=0;pass<passes;pass++)for(const turn of [0,120,240,240,360,480,480,600,720]){
+     const course=(heading+pass*30+turn)*Math.PI/180,a=raw[raw.length-1];go({x:a.x+radius*Math.sin(course),y:a.y+radius*Math.cos(course)});
     }
    }
   }
-  return {type,name:names[type],rect,points,legs,distance,time:distance/speed,budget,speed,spacing,radius,reason,finished:!halt,area:r.area};
+  const result=consume(raw,kinds,speed,productiveTime,maxTotal,endReason);
+  return {...result,type,name:names[type],rect,speed,spacing,radius,area:r.area,edgeAdjusted,maxTotalTime:Number.isFinite(maxTotal)?maxTotal:null};
+ }
+ function coordinatedArea(aircraft,ship){
+  const time=Math.min(positive(aircraft.result.time,'T da aeronave'),positive(ship.result.time,'T do navio'));
+  const area=positive(aircraft.result.spacing,'S da aeronave')*positive(aircraft.result.speed,'Va')*time;
+  positive(area,'Área nominal aérea do par');return {area,side:Math.sqrt(area),radius:Math.sqrt(area)/2,time};
  }
  function coordinated(aircraft,ship,side,options={}){
   positive(side,'Lado da área');
@@ -70,7 +85,7 @@
   const ta=positive(aircraft.result.time,'Tempo da aeronave'),ts=positive(ship.result.time,'Tempo do navio');
   const suppliedVs=positive(ship.result.speed,'Velocidade informada do navio'),heading=Number(options.heading??0);
   if(!Number.isFinite(heading)||heading<0||heading>=360)throw Error('Rumo do navio: use 0 até menos de 360°V.');
-  const angle=heading*Math.PI/180,sin=Math.sin(angle),cos=Math.cos(angle),extent=side/(Math.abs(sin)+Math.abs(cos));
+  const angle=(heading-Number(options.areaHeading||0))*Math.PI/180,sin=Math.sin(angle),cos=Math.cos(angle),extent=side/(Math.abs(sin)+Math.abs(cos));
   const mode=options.speedMode||'required';if(!['required','fixed'].includes(mode))throw Error('Selecione como coordenar a velocidade do navio.');
   let length,vs;
   if(mode==='fixed'){
@@ -83,38 +98,28 @@
   if(tracks<1)throw Error('Não há espaço para iniciar os dois meios dentro da área.');
   if(tracks>1000)throw Error('Mais de 1.000 pernadas CSC seriam necessárias. Aumente S ou reduza a área.');
   const first=-(tracks-1)*s/2,shipStart=first-phase;
-  const fullTime=(tracks*length+(tracks-1)*s)/va,time=Math.min(ta,ts,fullTime);
-  const reason=time<fullTime-EPS?'Tempo comum dos dois meios atingido':'Faixa CSC concluída';
+  const fullTime=(tracks*length+(tracks-1)*s)/va;
   const xy=(axis,cross)=>({x:axis*sin+cross*cos,y:axis*cos-cross*sin});
   const rect={west:-side/2,east:side/2,south:-side/2,north:side/2};
-  const make=(speed,spacing,unit)=>({type:'CSC',name:'Pente coordenado (CSC)',rect,points:[],legs:[],distance:0,time,fullTime,budget:speed*Math.min(ta,ts),speed,spacing,reason,finished:time>=fullTime-EPS,area:unit.result.area});
-  const airPlan=make(va,s,aircraft),shipPlan=make(vs,ship.result.spacing,ship);let elapsed=0;
-  const append=(plan,a,b,speed,kind,partial=false)=>{
-   const distance=Math.hypot(b.x-a.x,b.y-a.y);if(distance<EPS)return;
-   plan.points.push(b);plan.legs.push({from:a,to:b,distance,heading:M.normalize(Math.atan2(b.x-a.x,b.y-a.y)*180/Math.PI),time:distance/speed,kind,partial});plan.distance+=distance;
-  };
-  airPlan.points.push(xy(first,-length/2));
-  for(let i=0;i<tracks&&elapsed<time-EPS;i++){
-   const axis=first+i*s,target=xy(axis,i%2===0?length/2:-length/2),a=airPlan.points[airPlan.points.length-1],duration=length/va;
-   const fraction=Math.min(1,(time-elapsed)/duration),end={x:a.x+(target.x-a.x)*fraction,y:a.y+(target.y-a.y)*fraction};
-   append(airPlan,a,end,va,'busca',fraction<1-EPS);elapsed+=duration*fraction;
-   if(fraction<1-EPS||i===tracks-1||elapsed>=time-EPS)break;
-   const b=xy(axis+s,i%2===0?length/2:-length/2),start=airPlan.points[airPlan.points.length-1],crossTime=s/va,ratio=Math.min(1,(time-elapsed)/crossTime);
-   append(airPlan,start,{x:start.x+(b.x-start.x)*ratio,y:start.y+(b.y-start.y)*ratio},va,'ligação',ratio<1-EPS);elapsed+=crossTime*ratio;
-  }
-  const start=xy(shipStart,0),end=xy(shipStart+vs*time,0);shipPlan.points.push(start);append(shipPlan,start,end,vs,'busca',time<fullTime-EPS);
+  const raw=[xy(first,-length/2)],kinds=[];
+  for(let i=0;i<tracks;i++){raw.push(xy(first+i*s,i%2===0?length/2:-length/2));kinds.push('busca');if(i+1<tracks){raw.push(xy(first+(i+1)*s,i%2===0?length/2:-length/2));kinds.push('ligação');}}
+  const maxTotal=Math.min(ts,options.maxTotalTime?M.hours(options.maxTotalTime,'Limite total CSC'):Infinity);
+  const consumed=consume(raw,kinds,va,ta,maxTotal,'Faixa CSC concluída'),time=consumed.time,reason=consumed.reason;
+  const airPlan={...consumed,type:'CSC',name:'Pente coordenado (CSC)',rect,speed:va,spacing:s,area:aircraft.result.area};
+  const start=xy(shipStart,0),end=xy(shipStart+vs*time,0),distance=vs*time;
+  const shipPlan={type:'CSC',name:'Pente coordenado (CSC)',rect,points:[start,end],legs:[{from:start,to:end,distance,time,kind:'busca',heading:M.normalize(heading-Number(options.areaHeading||0)),partial:!consumed.finished,startTime:0,endTime:time}],distance,searchDistance:distance,linkDistance:0,time,searchTime:time,linkTime:0,fullRequiredTime:fullTime,fullSearchTime:fullTime,fullLinkTime:0,budget:vs*ts,speed:vs,spacing:ship.result.spacing,area:ship.result.area,reason,finished:consumed.finished};
   const crossings=[];
   for(let i=0;i<tracks;i++){
    const at=(length/2+i*(length+s))/va;if(at>time+EPS)break;
    crossings.push({time:at,point:xy(first+i*s,0),leg:2*i+1});
   }
   if([...airPlan.points,...shipPlan.points].some(p=>!inside(p,rect)))throw Error('O traçado coordenado ultrapassaria a área. Confira L, S e o rumo.');
-  return {airPlan,shipPlan,crossings,va,vs,s,length,suppliedVs,heading,mode,time,fullTime,extent,tracks,phase,reason};
+  return {airPlan,shipPlan,crossings,va,vs,s,length,suppliedVs,heading,mode,time,fullTime,extent,tracks,phase,reason,nominal:coordinatedArea(aircraft,ship)};
  }
  function geographic(point,datum,reference=datum.longitude){
   const distance=Math.hypot(point.x,point.y),bearing=M.normalize(Math.atan2(point.x,point.y)*180/Math.PI),p=M.rhumbDestination(datum.latitude,datum.longitude,distance,bearing);
   if(Math.abs(p.latitude)>85.05112878)throw Error('O traçado ultrapassa a latitude disponível no mapa.');
   return [p.latitude,p.longitude+360*Math.round((reference-p.longitude)/360)];
  }
- const api=Object.freeze({names,partition,generate,coordinated,geographic,inside});root.SARSearchPlans=api;if(typeof module!=='undefined'&&module.exports)module.exports=api;
+ const api=Object.freeze({names,partition,generate,coordinated,coordinatedArea,geographic,inside});root.SARSearchPlans=api;if(typeof module!=='undefined'&&module.exports)module.exports=api;
 })(typeof window!=='undefined'?window:globalThis);

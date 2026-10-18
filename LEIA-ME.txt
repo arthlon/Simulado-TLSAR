@@ -215,35 +215,35 @@ continua sem recarga forçada. Se um arquivo essencial falhar ou a montagem
 exceder 12 segundos, aparece uma mensagem para tentar novamente, preservando
 os dados salvos. Quando o JavaScript está desativado, vale o aviso da página.
 
-MAPA E CARTAS NÁUTICAS (BETA)
-Na calculadora, a seção Mapa da deriva carrega o mapa somente quando solicitada. É possível selecionar LKP com confirmação, ver DATUM e deslocamento calculado e a área quadrada nominal. GeoTIFFs locais são lidos no dispositivo; cartas KAP/GeoTIFF podem ser preparadas em tiles para publicação. Veja cartas/LEIA-ME.txt e ferramentas/converter_carta.py. Nenhuma carta real foi incluída. Mantenha a pasta vendor e suas licenças no pacote. O restante da calculadora e os simulados continuam independentes do mapa.
+MAPA RESUMIDO E MAPA COMPLETO (BETA)
+1. Calcule a deriva com LKP opcional e a área dos meios. Sem LKP, os cálculos numéricos continuam disponíveis, mas não há posição para traçar DATUM/área.
+2. Na calculadora, abra o mapa resumido: mostra LKP, DATUM na chegada, traçado da deriva, círculo de raio R e quadrado tangente. R = √At / 2; lado = 2R. Não há controles para ocultar informações, planos ou cartas nessa visão. O LKP é informado pelos campos da calculadora.
+3. “Mapa completo · planos e cartas” abre mapa.html em nova aba. Somente ali estão os padrões, controles de visibilidade/avaliação e sobreposição de cartas. Nenhuma carta real foi incluída; veja cartas/LEIA-ME.txt e ferramentas/converter_carta.py. GeoTIFF é lido no dispositivo, não enviado ao servidor.
+4. O quadrado permanece centrado no DATUM. Sua orientação automática usa a direção da deriva calculada como previsão constante para o período de busca. Na aba completa, pode-se informar outro eixo verdadeiro. Revise esse eixo quando a previsão durante a busca mudar. Não é orientação universal norte/sul.
+5. O mapa resumido sempre mostra a área nominal dos meios independentes. No modo CSC, somente a aba completa usa a área nominal aérea específica do par, com comparação explícita ao valor independente anterior.
+6. As abas compartilham os cálculos e as opções avançadas no mesmo navegador/origem. A orientação alterada na aba completa atualiza o quadrado resumido; avaliação, camadas ocultas, cartas e planos não alteram sua apresentação. Não há sincronização entre dispositivos. Armazenamento bloqueado impede compartilhar o cálculo e gera aviso.
+7. Os recursos Leaflet são carregados sob demanda. Bibliotecas de raster são carregadas somente ao selecionar GeoTIFF no mapa completo. Preserve vendor e suas licenças.
 
-PLANOS DE BUSCA E MAPA EM NOVA ABA
-1. Calcule a deriva com LKP e depois a área nominal de cada meio.
-2. Abra o mapa. Em Planos de busca por meio, escolha o padrão de cada meio:
-   PS: rotas paralelas ao lado maior da subárea; CS: varredura pelo lado menor.
-   SS: quadrado crescente, saída do DATUM, S/S/2S/2S..., guinadas a boreste.
-   VS: setores na variante com saída do DATUM (USCG), uma ou duas passagens.
-3. PS/CS distribuem o quadrado centrado no DATUM em faixas de oeste para leste, proporcionais às áreas Ai. Cada meio mantém S, V e T próprios. SS/VS ficam disponíveis para um único meio nesta versão.
-4. Para SS/VS, confira e ajuste o rumo inicial (padrão: direção da deriva no primeiro uso). No VS, o raio é específico; ele não é o espaçamento S. O raio padrão é R, limitado ao quadrado.
-5. O percurso usa no máximo V×T, incluindo ligações entre pernadas. O traçado pode terminar antes de completar a área, inclusive numa ligação. O quadro informa o motivo e a última pernada parcial. Curvas são idealizadas, sem raio de giro; o deslocamento até o CSP e a deriva durante a busca não são incluídos. A área nominal não é substituída por uma suposta área efetivamente coberta pelo desenho.
-6. Ao lado do mapa, escolha LKP, DATUM, deriva, área, subáreas, planos, rótulos e valores. Os traçados também podem ser ocultados por meio.
-7. Modo avaliação oculta rótulos, valores em balões e os quadros com cálculos e parâmetros dos planos. Os desenhos escolhidos permanecem. Essa apresentação não bloqueia acesso aos dados pela calculadora; use a nova aba para exibir somente o mapa.
-8. Abrir em nova aba mostra mapa.html com mais espaço. A calculadora compartilha o último cálculo e atualizações pelo armazenamento do mesmo navegador/origem. Padrões, visibilidade e opções de avaliação são compartilhados entre as abas. Com armazenamento bloqueado, a página informa que não conseguiu compartilhar. Não há sincronização entre dispositivos.
-9. Cartas publicadas podem ser selecionadas em ambas as abas. GeoTIFFs locais precisam ser selecionados novamente na aba ampliada; o arquivo não é enviado ao servidor nem gravado no histórico.
-10. Na nova aba, o LKP é somente leitura: modifique-o pela calculadora. A área continua centrada no DATUM. As posições dos traçados usam a mesma aproximação local em esfera do mapa.
-Publique todos os arquivos, incluindo mapa.html, js/planos-busca.js e js/mapa-estado.js. O versionamento foi estendido à nova página.
+PLANOS DE BUSCA NA NOVA ABA
+1. PS: rotas paralelas ao lado maior da subárea; CS: varredura pelo lado menor. O CSP fica S/2 para dentro em ambas as direções do canto. A última linha pode usar intervalo menor que S para respeitar a borda; o relatório informa esse ajuste. Se S não couber, o plano mostra erro para revisão.
+2. Meios independentes recebem faixas transversais ao eixo do quadrado, proporcionais às áreas Ai, com S, V e T próprios. SS/VS ficam disponíveis para um único meio nesta versão.
+3. SS: quadrado crescente a partir do DATUM, S/S/2S/2S..., guinadas a boreste. Rumo automático contra o vento; sem vento, 000°V como referência ajustável. Há seleção de rumo manual.
+4. VS: variante USCG com saída do DATUM; nove pernadas de comprimento r por passagem (cruzamentos pelo DATUM divididos), uma ou duas passagens, segunda girada 30°. Rumo automático na direção da deriva, ajustável manualmente. O raio r não é S e deve caber no quadrado.
+5. T informado é tempo PRODUTIVO de busca. Pernadas de busca consomem V×T; ligações acrescentam tempo, apresentado separadamente. O relatório mostra tempo de busca, ligações, total executado e tempo exigido pelo padrão completo. Pode-se informar limite total opcional; o desenho é interrompido ao atingir o primeiro limite aplicável. Não se desconta automaticamente mais 15% de T.
+6. Curvas são idealizadas e instantâneas. O deslocamento até o CSP não está incluído. O desenho não garante cobertura integral, probabilidade de detecção ou viabilidade operacional. A área nominal não é apresentada como área efetivamente coberta.
+7. Visibilidade por camada e por meio e modo avaliação controlam a apresentação da aba completa. Avaliação oculta rótulos, balões numéricos, parâmetros e resultados; não bloqueia acesso aos dados pelo navegador ou pela calculadora.
+8. O controle de previsão mostra DATUM, círculo e quadrado futuros sob corrente/vento constantes. Os trajetos permanecem ancorados no DATUM inicial: NÃO há compensação automática da deriva durante a busca. A previsão é apoio para revisar/replanejar, não comando de navegação.
 
 PENTE COORDENADO — CSC
-1. Calcule exatamente dois meios: um navio e uma aeronave. Para a aeronave, informe S, V (Va) e T da busca. Para o navio, informe sua velocidade planejada e T.
-2. Calcule também a deriva com LKP para obter o DATUM.
-3. No mapa, em Organização da busca, selecione Pente coordenado (CSC). Confirme quem é o navio e quem é a aeronave: são funções explícitas do plano, não dois padrões individuais.
-4. Defina o rumo de avanço do navio. A aeronave pesquisa perpendicularmente a esse rumo, usando o S da aeronave.
-5. Escolha o modo de sincronização:
-   - Informar L → calcular Vs: Vs = S × Va / (L + S). L em branco usa o lado do retângulo inscrito na área. Vs calculada é usada somente no plano CSC e comparada com a velocidade originalmente informada do navio. Os campos e a área nominal anteriores não são alterados.
-   - Manter Vs → calcular L: L = S × (Va / Vs − 1). É necessário Vs < Va e L caber na área. Ajuste os dados ou o modo se não couber.
-6. O retângulo do CSC é inscrito no quadrado centrado no DATUM, para manter os dois traçados dentro da área mesmo em rumos oblíquos. Não há subáreas independentes para os integrantes do par. A sincronização usa uma defasagem inicial: o navio começa atrás da linha da primeira pernada, passando sobre o eixo da aeronave exatamente no meio de cada travessia no modelo.
-7. O plano usa no máximo o menor T dos dois meios e termina antes se concluir a faixa. Os relatórios mostram CSP de cada meio, velocidade efetivamente usada, distâncias, tempos e instantes dos encontros. Pode haver parada numa pernada ou ligação parcial.
-8. O controle Encontros navio–aeronave mostra/oculta os pontos de encontro. A visibilidade por meio, o modo avaliação e a sincronização com a aba ampliada se aplicam também ao CSC.
-Hipóteses: velocidades constantes, sem vento sobre a aeronave, corrente, raio de giro ou atraso nas curvas; início conjunto a partir dos CSP calculados. A fórmula IAMSAR utiliza a velocidade aerodinâmica verdadeira (TAS); neste desenho idealizado ela é tratada como igual à velocidade sobre o solo. O plano não verifica desempenho ou capacidade dos meios. O coordenador SAR deve definir as condições de execução.
-A área At já calculada continua nominal: a participação coordenada dos dois meios não equivale a duas áreas geográficas independentes. O CSC não aumenta nem recalcula a área do quadrado automaticamente.
+1. Cadastre exatamente dois meios e selecione explicitamente navio e aeronave no mapa completo.
+2. O navio segue o eixo de avanço e a aeronave pesquisa perpendicularmente a ele, usando S e Va da aeronave. O rumo automático do navio é transversal ao eixo longitudinal da área; há rumo manual.
+3. Por L: Vs = S × Va / (L + S); L em branco usa o lado do retângulo inscrito na área. Por Vs: L = S × (Va / Vs − 1), exigindo Vs < Va e L que caiba. Vs calculada aparece comparada à velocidade originalmente informada do navio; não altera os campos do cálculo independente.
+4. O quadrado CSC usa A = S_a × Va × mínimo(Ta, Tn), lado √A e R = √A / 2. Trata-se de uma escolha explícita de dimensionamento pela capacidade aérea nominal, um limite superior sem desconto das ligações e giros, não uma fórmula universal IAMSAR para garantir área coberta. A área do navio de referência não é somada. O valor independente anterior aparece para comparação e continua no mapa resumido.
+5. O retângulo dos trajetos é inscrito no quadrado. Uma defasagem inicial do navio sincroniza a passagem sobre o meio de cada travessia aérea, no modelo. Os relatórios indicam encontros, rumo, velocidade, CSP e tempos.
+6. A aeronave fica limitada por Ta produtivo; busca e ligações são discriminadas. O tempo decorrido do conjunto não excede Tn do navio, que navega continuamente em linha reta, nem o limite total opcional. O padrão pode encerrar antes por completar a faixa ou atingir um limite; não se presume que o quadrado todo foi coberto.
+7. Hipóteses: velocidades constantes, sem efeito de vento/corrente sobre a navegação dos meios, sem raio de giro ou atraso nas curvas. A velocidade aerodinâmica verdadeira (TAS) da relação de coordenação é tratada como igual à velocidade sobre o solo no desenho idealizado. O coordenador SAR deve definir condições e viabilidade de execução.
+
+REFERÊNCIAS E VERIFICAÇÃO
+Orientação e regras básicas: IAMSAR II, edição 2016, apêndice L; IAMSAR III, edição 2016, seções de planejamento e padrões de busca. As tabelas de entrada e o leeway digitalizado mantêm as fontes e limitações descritas anteriormente neste arquivo.
+Os testes desta revisão verificaram fórmulas, geometria, tempos produtivos/ligações, encontros CSC em rumos variados, atualização entre abas, isolamento das camadas, formulários reais e abertura GeoTIFF nas bibliotecas locais, em ambiente DOM. Não houve validação visual em Safari/iPad real.
+Publique a pasta completa, incluindo mapa.html, js/mapa-resumo.js e todos os demais arquivos. O identificador de revisão é atualizado por ferramentas/atualizar_versao.py.

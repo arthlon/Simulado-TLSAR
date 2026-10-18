@@ -13,13 +13,19 @@
   }
   return points;
  }
- function square(center,side,reference=center.longitude){
+ function rotate(p,heading=0){const a=heading*Math.PI/180;return {x:p.x*Math.cos(a)+p.y*Math.sin(a),y:-p.x*Math.sin(a)+p.y*Math.cos(a)};}
+ function project(p,center,reference=center.longitude){
+  const result=M.rhumbDestination(center.latitude,center.longitude,Math.hypot(p.x,p.y),M.normalize(Math.atan2(p.x,p.y)*180/Math.PI));
+  if(!visible(result))throw Error('A área ultrapassa o limite de latitude deste mapa.');
+  return [result.latitude,near(result.longitude,reference)];
+ }
+ function orientation(state,options={}){return options.areaMode==='manual'?M.bearing(options.areaHeading,'Orientação da área'):state.drift?.direction??0;}
+ function future(datum,drift,hours){if(!Number.isFinite(hours)||hours<0)throw Error('Tempo de previsão inválido.');return M.rhumbDestination(datum.latitude,datum.longitude,drift.speed*hours,drift.direction);}
+ function square(center,side,reference=center.longitude,heading=0){
   if(!Number.isFinite(side)||side<=0)throw Error('O lado do quadrado deve ser positivo.');
   // Local N/E offsets: corners at half a side north/south and east/west.
-  const r=side/2,points=[315,45,135,225].map(b=>M.rhumbDestination(center.latitude,center.longitude,r*Math.SQRT2,b));
-  if(points.some(p=>!visible(p)))throw Error('O quadrado ultrapassa o limite de latitude deste mapa.');
-  return points.map(p=>[p.latitude,near(p.longitude,reference)]);
+  const r=side/2;return [{x:-r,y:r},{x:r,y:r},{x:r,y:-r},{x:-r,y:-r}].map(p=>project(rotate(p,heading),center,reference));
  }
- const api=Object.freeze({visible,near,path,square});root.SARMapGeometry=api;
+ const api=Object.freeze({visible,near,path,square,rotate,project,orientation,future});root.SARMapGeometry=api;
  if(typeof module!=='undefined'&&module.exports)module.exports=api;
 })(typeof window!=='undefined'?window:globalThis);
