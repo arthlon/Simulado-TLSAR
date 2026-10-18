@@ -264,4 +264,6 @@ Os meios de busca usam uma grade mais compacta, com S, V e T juntos e orientaç�
 
 ALINHAMENTO E PRÓXIMA ETAPA
 Os campos em uma mesma linha se alinham pela base dos controles; rótulos de duas ou mais linhas não deslocam a caixa vizinha. A altura do rótulo continua livre, sem cortes de texto nem limite fixo de linhas.
-Depois de um cálculo válido, a ação principal se torna Próxima: área (após a deriva) ou Próxima: mapa (após a área). A navegação só ocorre ao clicar novamente. Alterar dados invalida o resultado e restaura Calcular; erros mantêm a ação de cálculo. Ver resultado continua disponível separadamente.
+Depois de um cálculo válido, a ação principal se torna Ir para: área (após a deriva) ou Ir para: mapa (após a área). A navegação só ocorre ao clicar novamente. Alterar dados invalida o resultado e restaura Calcular; erros mantêm a ação de cálculo. Ver resultado continua disponível separadamente.
+
+O botão de avanço usa verde com texto branco (Ir para: área / Ir para: mapa). Ao editar dados e voltar a Calcular, retoma a cor amarela.

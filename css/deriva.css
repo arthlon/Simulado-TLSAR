@@ -62,3 +62,7 @@ html{scroll-behavior:smooth;scroll-padding-top:20px}a{color:#087970;text-underli
 /* Stretch labels to the grid row, then anchor controls to the same baseline. */
 .compact-calculator .form-grid>label,.compact-calculator .unit-track-grid>label,.compact-calculator .coordinate-row>label{align-self:stretch}
 .compact-calculator .form-grid>label>input,.compact-calculator .form-grid>label>select,.compact-calculator .unit-track-grid>label>input,.compact-calculator .coordinate-row>label>input,.compact-calculator .coordinate-row>label>select{margin-top:auto;flex-shrink:0}
+
+/* Green identifies navigation; calculation keeps the amber accent. */
+.calculation-dock #dock-submit[data-next]{background:#087970;color:#fff}
+.calculation-dock #dock-submit[data-next]:hover:not(:disabled){background:#065f58}

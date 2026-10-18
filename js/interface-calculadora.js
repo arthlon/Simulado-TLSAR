@@ -9,7 +9,7 @@
   $('dock-title').textContent=drift?'Deriva e DATUM':'Cobertura e área';
   const button=$('dock-submit'),ready=!result.hidden&&!error&&!dirty;
   button.setAttribute('form',prefix+'-form');button.type=ready?'button':'submit';
-  if(ready){button.dataset.next=drift?'search-section':'map-section';button.textContent=drift?'Próxima: área →':'Próxima: mapa →';}
+  if(ready){button.dataset.next=drift?'search-section':'map-section';button.textContent=drift?'Ir para: área →':'Ir para: mapa →';}
   else{delete button.dataset.next;button.textContent=drift?'Calcular deriva →':'Calcular área →';}
   $('dock-note').textContent=error?'Confira os dados informados.':dirty?'Dados alterados · calcule para atualizar.':!result.hidden?'Resultado calculado.':'Preencha os dados e calcule.';
   $('dock-result').hidden=result.hidden&&!error;
