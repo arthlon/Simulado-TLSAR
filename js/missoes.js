@@ -10,7 +10,7 @@
   document.querySelectorAll('[data-view]').forEach(a=>{if(a.dataset.view===id)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
   // Leaflet must measure its canvas after the hidden panel becomes visible.
   requestAnimationFrame(()=>{dispatchEvent(new Event('resize'));document.dispatchEvent(new CustomEvent('lsar:workspace-view',{detail:{id}}));});
-  if(focus){const heading=$(id).querySelector('h2');heading.tabIndex=-1;heading.focus({preventScroll:true});}
+  if(focus){const heading=$(id).querySelector('h2');heading.tabIndex=-1;heading.focus({preventScroll:true});if(document.body.classList.contains('compact-calculator'))heading.scrollIntoView?.({block:'start',behavior:'auto'});}
  }
  document.body.classList.add('workspace-ready');view(location.hash.slice(1));
  document.addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]');if(!a)return;const id=a.getAttribute('href').slice(1);if(!panels.some(p=>p.id===id))return;e.preventDefault();history.replaceState(null,'','#'+id);view(id,true);});
