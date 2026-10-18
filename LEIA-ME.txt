@@ -261,3 +261,7 @@ O botão Abrir mapa foi removido da calculadora. Ao acessar a seção Mapa, a vi
 FORMULÁRIOS COMPACTOS E CÁLCULO ACESSÍVEL
 A calculadora ganhou um cabeçalho menor; os comandos de salvar/atualizar missão ficam em Salvar missão. Os dados de deriva são organizados em cartões: horários, corrente/vento, leeway e LKP opcional. Em tablet/desktop, corrente/vento e leeway ocupam colunas paralelas; no celular, as intensidades e direções continuam pareadas. Gráfico, explicações e observação opcional são expansíveis. Os campos de data mantêm largura limitada e se empilham em telas estreitas.
 Os meios de busca usam uma grade mais compacta, com S, V e T juntos e orientações em um painel recolhido. Os botões de cálculo ficam numa barra fixa inferior quando a seção Deriva ou Área está aberta. Ver resultado leva ao resultado (ou ao aviso de erro); o cálculo não troca de aba nem força rolagem. A barra não aparece no mapa, nas missões ou no guia. Os campos e as fórmulas foram preservados, assim como o rascunho e as missões existentes.
+
+ALINHAMENTO E PRÓXIMA ETAPA
+Os campos em uma mesma linha se alinham pela base dos controles; rótulos de duas ou mais linhas não deslocam a caixa vizinha. A altura do rótulo continua livre, sem cortes de texto nem limite fixo de linhas.
+Depois de um cálculo válido, a ação principal se torna Próxima: área (após a deriva) ou Próxima: mapa (após a área). A navegação só ocorre ao clicar novamente. Alterar dados invalida o resultado e restaura Calcular; erros mantêm a ação de cálculo. Ver resultado continua disponível separadamente.

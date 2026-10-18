@@ -58,3 +58,7 @@ html{scroll-behavior:smooth;scroll-padding-top:20px}a{color:#087970;text-underli
 @media print{.calculation-dock,.mission-tools{display:none!important}.compact-calculator{padding-bottom:0}.compact-calculator .workspace-tabs{position:static}.compact-guides{display:none}.compact-calculator .calc-main{max-width:none}}
 
 .compact-calculator .calc-section>h2{scroll-margin-top:82px}.compact-calculator input,.compact-calculator select{scroll-margin-top:90px;scroll-margin-bottom:120px}
+
+/* Stretch labels to the grid row, then anchor controls to the same baseline. */
+.compact-calculator .form-grid>label,.compact-calculator .unit-track-grid>label,.compact-calculator .coordinate-row>label{align-self:stretch}
+.compact-calculator .form-grid>label>input,.compact-calculator .form-grid>label>select,.compact-calculator .unit-track-grid>label>input,.compact-calculator .coordinate-row>label>input,.compact-calculator .coordinate-row>label>select{margin-top:auto;flex-shrink:0}
