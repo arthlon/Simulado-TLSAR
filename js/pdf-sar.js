@@ -82,15 +82,15 @@
  function row(page,x,y,label,value,available=186){page.text(x,y,label,8,false,C.muted);page.text(x+34,y,ellipsis(value,available-34,9),9,true);}
  function summary(model){
   const page=new Page(210,297),r=model.state.drift,d=r.datum,t=model.state.search,raw=model.raw.drift;header(page,model,1,'Resumo da deriva e da área de busca');
-  page.text(12,38,'DERIVA',9,true,C.teal);
-  row(page,12,45,'Incidente',moment(raw.incident));row(page,12,51,'Chegada',moment(raw.arrival));row(page,12,57,'Atraso',num(r.time)+' h');row(page,12,63,'Corrente',num(r.currentSpeed)+' nós para '+num(r.currentDirection,2)+'°');
+  page.text(12,38,'DERIVA',9,true,C.teal);page.text(198,38,'Vetores: velocidade (nós) / direção (°)',7.5,false,C.muted,'right');
+  row(page,12,45,'Incidente',moment(raw.incident));row(page,12,51,'Chegada',moment(raw.arrival));row(page,12,57,'Atraso',num(r.time)+' h');row(page,12,63,'Corrente',num(r.currentSpeed)+' nós / '+num(r.currentDirection,2)+'°');
   row(page,12,69,'Vento',num(r.windSpeed)+' nós / '+num(r.windDirection,2)+'° ('+(raw.windConvention==='from'?'de onde sopra':'para onde sopra')+')');
-  row(page,12,75,'Leeway',num(r.leeway)+' nós para '+num(r.leewayDirection,2)+'° ('+(raw.leewayMode==='auto'?'automático':'manual')+')');row(page,12,81,'Objeto',(model.objectLabel||raw.leewayCondition||'Manual').replace(/\s*\(.*/,''));
-  page.text(12,92,'POSIÇÕES E RESULTANTE',9,true,C.teal);
-  page.text(12,99,'DATUM 1 - LKP',8,true,C.blue);page.text(12,105,position(d.lkp),8.5,true);page.text(12,111,moment(d.startTime),8,false,C.muted);
-  page.text(108,99,'DATUM 2 - estimado na chegada',8,true,C.teal);page.text(108,105,position(d),8.5,true);page.text(108,111,moment(d.endTime),8,false,C.muted);
-  row(page,12,119,'Intensidade da deriva',num(r.speed)+' nós',90);row(page,108,119,'Direção da deriva',r.direction===null?'Indeterminada':num(r.direction,2)+'°',90);
-  page.text(12,125,ellipsis('Deslocamento desde o LKP: '+num(d.distance)+' MN | Intervalo LKP -> chegada: '+num(d.time)+' h',186,8.5),8.5,false,C.muted);
+  row(page,12,75,'Leeway',num(r.leeway)+' nós / '+num(r.leewayDirection,2)+'° ('+(raw.leewayMode==='auto'?'automático':'manual')+')');row(page,12,81,'Objeto',(model.objectLabel||raw.leewayCondition||'Manual').replace(/\s*\(.*/,''));
+  row(page,12,87,'Deriva resultante',num(r.speed)+' nós / '+(r.direction===null?'Indeterminada':num(r.direction,2)+'°'));
+  row(page,12,93,'Deslocamento',num(d.distance)+' MN desde o LKP');
+  page.text(12,104,'POSIÇÕES',9,true,C.teal);
+  page.text(12,111,'DATUM 1 - LKP',8,true,C.blue);page.text(12,117,position(d.lkp),8.5,true);page.text(12,123,moment(d.startTime),8,false,C.muted);
+  page.text(108,111,'DATUM 2 - estimado na chegada',8,true,C.teal);page.text(108,117,position(d),8.5,true);page.text(108,123,moment(d.endTime),8,false,C.muted);
   const metrics=[['At - soma nominal',num(t.area)+' MN²'],['Lado do quadrado',num(t.side)+' MN'],['Raio R = sqrt(At) / 2',num(t.radius)+' MN'],['Deriva desde o incidente',num(r.distance)+' MN']];
   metrics.forEach(([label,value],i)=>{const x=12+(i%2)*96,y=131+Math.floor(i/2)*19;page.rect(x,y,90,16,C.pale);page.text(x+3,y+5,label,7.5,false,C.muted);page.text(x+3,y+12,value,12,true);});
   page.text(12,175,'DADOS DA ÁREA DE BUSCA - MEIOS INDEPENDENTES',9,true,C.teal);
