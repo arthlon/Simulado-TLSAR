@@ -83,25 +83,26 @@
  function summary(model){
   const page=new Page(210,297),r=model.state.drift,d=r.datum,t=model.state.search,raw=model.raw.drift;header(page,model,1,'Resumo da deriva e da área de busca');
   page.text(12,38,'DERIVA',9,true,C.teal);
-  row(page,12,45,'Incidente',moment(raw.incident));row(page,12,51,'Chegada',moment(raw.arrival));row(page,12,57,'Tempo decorrido',num(r.time)+' h');row(page,12,63,'Corrente',num(r.currentSpeed)+' nós para '+num(r.currentDirection,2)+'°V');
-  row(page,12,69,'Vento',num(r.windSpeed)+' nós / '+num(r.windDirection,2)+'°V ('+(raw.windConvention==='from'?'de onde sopra':'para onde sopra')+')');
-  row(page,12,75,'Leeway',num(r.leeway)+' nós para '+num(r.leewayDirection,2)+'°V ('+(raw.leewayMode==='auto'?'automático':'manual')+')');row(page,12,81,'Objeto',(model.objectLabel||raw.leewayCondition||'Manual').replace(/\s*\(.*/,''));
+  row(page,12,45,'Incidente',moment(raw.incident));row(page,12,51,'Chegada',moment(raw.arrival));row(page,12,57,'Atraso',num(r.time)+' h');row(page,12,63,'Corrente',num(r.currentSpeed)+' nós para '+num(r.currentDirection,2)+'°');
+  row(page,12,69,'Vento',num(r.windSpeed)+' nós / '+num(r.windDirection,2)+'° ('+(raw.windConvention==='from'?'de onde sopra':'para onde sopra')+')');
+  row(page,12,75,'Leeway',num(r.leeway)+' nós para '+num(r.leewayDirection,2)+'° ('+(raw.leewayMode==='auto'?'automático':'manual')+')');row(page,12,81,'Objeto',(model.objectLabel||raw.leewayCondition||'Manual').replace(/\s*\(.*/,''));
   page.text(12,92,'POSIÇÕES E RESULTANTE',9,true,C.teal);
   page.text(12,99,'DATUM 1 - LKP',8,true,C.blue);page.text(12,105,position(d.lkp),8.5,true);page.text(12,111,moment(d.startTime),8,false,C.muted);
   page.text(108,99,'DATUM 2 - estimado na chegada',8,true,C.teal);page.text(108,105,position(d),8.5,true);page.text(108,111,moment(d.endTime),8,false,C.muted);
-  page.text(12,119,ellipsis(num(r.speed)+' nós / '+(r.direction===null?'rumo indeterminado':num(r.direction,2)+'°V')+' / '+num(d.distance)+' MN em '+num(d.time)+' h desde o LKP',186,9,true),9,true);
+  row(page,12,119,'Intensidade da deriva',num(r.speed)+' nós',90);row(page,108,119,'Direção da deriva',r.direction===null?'Indeterminada':num(r.direction,2)+'°',90);
+  page.text(12,125,ellipsis('Deslocamento desde o LKP: '+num(d.distance)+' MN | Intervalo LKP -> chegada: '+num(d.time)+' h',186,8.5),8.5,false,C.muted);
   const metrics=[['At - soma nominal',num(t.area)+' MN²'],['Lado do quadrado',num(t.side)+' MN'],['Raio R = sqrt(At) / 2',num(t.radius)+' MN'],['Deriva desde o incidente',num(r.distance)+' MN']];
-  metrics.forEach(([label,value],i)=>{const x=12+(i%2)*96,y=125+Math.floor(i/2)*19;page.rect(x,y,90,16,C.pale);page.text(x+3,y+5,label,7.5,false,C.muted);page.text(x+3,y+12,value,12,true);});
-  page.text(12,169,'DADOS DA ÁREA DE BUSCA - MEIOS INDEPENDENTES',9,true,C.teal);
+  metrics.forEach(([label,value],i)=>{const x=12+(i%2)*96,y=131+Math.floor(i/2)*19;page.rect(x,y,90,16,C.pale);page.text(x+3,y+5,label,7.5,false,C.muted);page.text(x+3,y+12,value,12,true);});
+  page.text(12,175,'DADOS DA ÁREA DE BUSCA - MEIOS INDEPENDENTES',9,true,C.teal);
   const cols=[['Meio / fonte',54],['Wu (MN)',17],['fw',11],['Wc (MN)',18],['S (MN)',17],['C',12],['V (nós)',17],['T (h)',15],['A (MN²)',25]];
-  let x=12;page.rect(12,173,186,6,C.navy);cols.forEach(([label,w],i)=>{page.text(i?x+w-1.5:x+1.5,177,label,6.5,true,'#ffffff',i?'right':'left');x+=w;});
-  const height=Math.min(8.5,96/t.units.length),font=height<4?6.5:height<6?7.5:8.5;
-  t.units.forEach((unit,i)=>{const y=179+i*height,a=unit.result,platform={merchant:'Navio mercante',helicopter:'Helicóptero',fixed:'Asa fixa',manual:'Manual'}[unit.platform]||'Tabela';if(i%2===0)page.rect(12,y,186,height,'#f3f7f8');page.line(12,y+height,198,y+height,'#dce5e9',.13);
+  let x=12;page.rect(12,179,186,6,C.navy);cols.forEach(([label,w],i)=>{page.text(i?x+w-1.5:x+1.5,183,label,6.5,true,'#ffffff',i?'right':'left');x+=w;});
+  const height=Math.min(8.5,90/t.units.length),font=height<4?6.5:height<6?7.5:8.5;
+  t.units.forEach((unit,i)=>{const y=185+i*height,a=unit.result,platform={merchant:'Navio mercante',helicopter:'Helicóptero',fixed:'Asa fixa',manual:'Manual'}[unit.platform]||'Tabela';if(i%2===0)page.rect(12,y,186,height,'#f3f7f8');page.line(12,y+height,198,y+height,'#dce5e9',.13);
    const values=[unit.name+' / '+platform,...['wu','fw','wc','spacing','coverage','speed','time','area'].map(k=>num(a[k]))];let x=12;
    cols.forEach(([,w],j)=>{page.text(j?x+w-1.5:x+1.5,y+height*.5+font/PT*.32,ellipsis(values[j],w-3,font,j===0),font,j===0,C.ink,j?'right':'left');x+=w;});
   });
   page.text(12,281,'Wc = Wu x fw | C = Wc / S | A = S x V x T | At = soma Ai | lado = 2R.',7,false,C.muted);
-  page.text(12,285,'T: horas efetivas de busca. C e fw: sem unidade. Valores arredondados na exibição.',7,false,C.muted);
+  page.text(12,285,'T: horas efetivas de busca. C e fw: sem unidade. Direções referidas ao norte verdadeiro.',7,false,C.muted);
   page.line(12,288,198,288,C.line,.2);page.text(12,293,'Corrente e leeway constantes. Área nominal: não desconta sobreposições.',7,false,C.muted);return page;
  }
  function chart(model,g){

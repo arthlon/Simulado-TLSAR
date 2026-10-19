@@ -21,8 +21,8 @@
    if(state.search?.radius>0){
     const angle=0,r=state.search.radius,corners=G.square(d,state.search.side,point[1],angle);
     L.circle(point,{radius:r*1852,color:'#9361a5',weight:2,fill:false,dashArray:'6 4'}).bindPopup(text('R = '+num(r)+' MN · centro no DATUM · círculo inscrito no quadrado.')).addTo(layers);
-    L.polygon(corners,{color:'#d28a20',fillColor:'#e4aa40',fillOpacity:.08,weight:2}).bindPopup(text('Área nominal dos meios independentes: '+num(state.search.area)+' MN² · lado '+num(state.search.side)+' MN · eixo '+num(angle)+'°V.')).addTo(layers);
-    corners.forEach(p=>bounds.extend(p));message+=' R = '+num(r)+' MN; lado = '+num(state.search.side)+' MN; eixo = '+num(angle)+'°V.';
+    L.polygon(corners,{color:'#d28a20',fillColor:'#e4aa40',fillOpacity:.08,weight:2}).bindPopup(text('Área nominal dos meios independentes: '+num(state.search.area)+' MN² · lado '+num(state.search.side)+' MN · eixo '+num(angle)+'°.')).addTo(layers);
+    corners.forEach(p=>bounds.extend(p));message+=' R = '+num(r)+' MN; lado = '+num(state.search.side)+' MN; eixo = '+num(angle)+'°.';
    }
   }catch(error){message=error.message;}
   else if(d)message='A posição excede a latitude disponível neste mapa.';

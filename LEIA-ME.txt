@@ -219,7 +219,7 @@ MAPA RESUMIDO E MAPA COMPLETO (BETA)
 1. Calcule a deriva com LKP opcional e a área dos meios. Sem LKP, os cálculos numéricos continuam disponíveis, mas não há posição para traçar DATUM/área.
 2. Na calculadora, acesse a seção Mapa: o mapa resumido carrega automaticamente e mostra LKP, DATUM na chegada, traçado da deriva, círculo de raio R e quadrado tangente. R = √At / 2; lado = 2R. Não há controles para ocultar informações, planos ou cartas nessa visão. O LKP é informado pelos campos da calculadora.
 3. “Mapa completo · planos e cartas” abre mapa.html em nova aba. Somente ali estão os padrões, controles de visibilidade/avaliação e sobreposição de cartas. Nenhuma carta real foi incluída; veja cartas/LEIA-ME.txt e ferramentas/converter_carta.py. GeoTIFF é lido no dispositivo, não enviado ao servidor.
-4. O quadrado permanece centrado no DATUM. No mapa resumido, o quadrado fica sempre com os lados alinhados a norte/sul e leste/oeste (eixo 000°V). Na aba completa, a orientação automática usa a direção da deriva calculada como previsão constante durante a busca; também há um eixo manual. Esses controles não giram o quadrado do primeiro mapa.
+4. O quadrado permanece centrado no DATUM. No mapa resumido, o quadrado fica sempre com os lados alinhados a norte/sul e leste/oeste (eixo 000°). Na aba completa, a orientação automática usa a direção da deriva calculada como previsão constante durante a busca; também há um eixo manual. Esses controles não giram o quadrado do primeiro mapa.
 5. O mapa resumido sempre mostra a área nominal dos meios independentes. No modo CSC, somente a aba completa usa a área nominal aérea específica do par, com comparação explícita ao valor independente anterior.
 6. As abas compartilham os cálculos e as opções avançadas no mesmo navegador/origem. Alterações de orientação, avaliação, camadas ocultas, cartas e planos na aba completa não alteram a apresentação do mapa resumido. Não há sincronização entre dispositivos. Armazenamento bloqueado impede compartilhar o cálculo e gera aviso.
 7. Os recursos Leaflet são carregados automaticamente ao exibir a seção Mapa. Bibliotecas de raster são carregadas somente ao selecionar GeoTIFF no mapa completo. Preserve vendor e suas licenças.
@@ -227,7 +227,7 @@ MAPA RESUMIDO E MAPA COMPLETO (BETA)
 PLANOS DE BUSCA NA NOVA ABA
 1. PS: rotas paralelas ao lado maior da subárea; CS: varredura pelo lado menor. O CSP fica S/2 para dentro em ambas as direções do canto. A última linha pode usar intervalo menor que S para respeitar a borda; o relatório informa esse ajuste. Se S não couber, o plano mostra erro para revisão.
 2. Meios independentes recebem faixas transversais ao eixo do quadrado, proporcionais às áreas Ai, com S, V e T próprios. SS/VS ficam disponíveis para um único meio nesta versão.
-3. SS: quadrado crescente a partir do DATUM, S/S/2S/2S..., guinadas a boreste. Rumo automático contra o vento; sem vento, 000°V como referência ajustável. Há seleção de rumo manual.
+3. SS: quadrado crescente a partir do DATUM, S/S/2S/2S..., guinadas a boreste. Rumo automático contra o vento; sem vento, 000° como referência ajustável. Há seleção de rumo manual.
 4. VS: variante USCG com saída do DATUM; nove pernadas de comprimento r por passagem (cruzamentos pelo DATUM divididos), uma ou duas passagens, segunda girada 30°. Rumo automático na direção da deriva, ajustável manualmente. O raio r não é S e deve caber no quadrado.
 5. T informado é tempo PRODUTIVO de busca. Pernadas de busca consomem V×T; ligações acrescentam tempo, apresentado separadamente. O relatório mostra tempo de busca, ligações, total executado e tempo exigido pelo padrão completo. Pode-se informar limite total opcional; o desenho é interrompido ao atingir o primeiro limite aplicável. Não se desconta automaticamente mais 15% de T.
 6. Curvas são idealizadas e instantâneas. O deslocamento até o CSP não está incluído. O desenho não garante cobertura integral, probabilidade de detecção ou viabilidade operacional. A área nominal não é apresentada como área efetivamente coberta.
@@ -282,3 +282,6 @@ Publique também js/pdf-referencia.js, js/pdf-sar.js, js/exportar-pdf.js e a pas
 
 LINHAS DE REFERÊNCIA DO DATUM 1
 Na carta do PDF, uma linha horizontal liga a escala lateral de latitude ao DATUM 1 e uma linha vertical liga a escala inferior de longitude ao DATUM 1. São azuis, finas e tracejadas, desenhadas sob a deriva e os marcadores. Só são traçadas quando o DATUM 1 está dentro da moldura; a graduação fixa, o recorte, o quadrado e o círculo permanecem iguais.
+
+RÓTULOS DOS RESULTADOS
+Os ângulos são exibidos com o símbolo de graus, sem o sufixo V. A referência continua sendo o norte verdadeiro. O intervalo entre incidente e chegada é identificado como Atraso. O resumo PDF mostra separadamente Intensidade da deriva (nós) e Direção da deriva (graus), e distingue esse atraso do intervalo próprio entre LKP e chegada.

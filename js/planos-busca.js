@@ -51,7 +51,7 @@
    start(point(offsets[0],reverse));
    offsets.forEach((offset,i)=>{const high=(i%2===0)!==reverse;go(point(offset,high));if(i+1<offsets.length)go(point(offsets[i+1],high),'ligação');});
   }else{
-   const heading=Number(options.heading??0);if(!Number.isFinite(heading)||heading<0||heading>=360)throw Error('Rumo inicial: use 0 até menos de 360°V.');
+   const heading=Number(options.heading??0);if(!Number.isFinite(heading)||heading<0||heading>=360)throw Error('Rumo inicial: use 0 até menos de 360°.');
    start({x:0,y:0});
    if(type==='SS'){
     for(let i=0;i<LIMIT;i++){
@@ -84,7 +84,7 @@
   const va=positive(aircraft.result.speed,'Velocidade da aeronave'),s=positive(aircraft.result.spacing,'S da aeronave');
   const ta=positive(aircraft.result.time,'Tempo da aeronave'),ts=positive(ship.result.time,'Tempo do navio');
   const suppliedVs=positive(ship.result.speed,'Velocidade informada do navio'),heading=Number(options.heading??0);
-  if(!Number.isFinite(heading)||heading<0||heading>=360)throw Error('Rumo do navio: use 0 até menos de 360°V.');
+  if(!Number.isFinite(heading)||heading<0||heading>=360)throw Error('Rumo do navio: use 0 até menos de 360°.');
   const angle=(heading-Number(options.areaHeading||0))*Math.PI/180,sin=Math.sin(angle),cos=Math.cos(angle),extent=side/(Math.abs(sin)+Math.abs(cos));
   const availableLeg=extent-s;
   if(availableLeg<=EPS)throw Error('S não cabe na área com margem de S/2. Reveja o espaçamento ou a área.');
