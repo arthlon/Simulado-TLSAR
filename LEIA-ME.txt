@@ -5,7 +5,7 @@ index.html        Página inicial e escolha dos cursos.
 css/estilo.css    Aparência dos dois simulados.
 js/simulado.js    Regras, navegação, correção, pontuação e progresso.
 dados/tlsar.js   159 perguntas TLSAR e suas referências.
-dados/clsar.js   128 perguntas CLSAR e suas referências.
+dados/clsar.js   335 perguntas CLSAR e suas referências.
 
 COMO USAR NO COMPUTADOR
 1. Extraia todos os arquivos do ZIP para uma pasta.
@@ -285,3 +285,8 @@ Na carta do PDF, uma linha horizontal liga a escala lateral de latitude ao DATUM
 
 RÓTULOS DOS RESULTADOS
 Os ângulos são exibidos com o símbolo de graus, sem o sufixo V. A referência continua sendo o norte verdadeiro. O intervalo entre incidente e chegada é identificado como Atraso. No resumo PDF, corrente, vento, leeway e deriva resultante seguem o padrão velocidade (nós) / direção (graus). Deriva resultante e Deslocamento ficam na sequência da seção DERIVA. O deslocamento é contado desde o LKP; o intervalo próprio LKP → chegada foi retirado do resumo. O atraso entre incidente e chegada permanece informado.
+
+AMPLIAÇÃO DO SIMULADO CLSAR
+Adicionadas 207 questões dos 12 arquivos novos únicos: balizamento, RIPEAM, luzes, publicações, planejamento da derrota, tipos e métodos, entrada e saída de porto, baixa visibilidade, mau tempo, meteorologia, avarias e deriva/área/padrões de busca. Os reenvios idênticos foram desconsiderados. São 335 questões em 16 assuntos, mantendo os quatro temas SAR anteriores.
+As 128 questões antigas, seus IDs, gabaritos e os quatro IDs de fonte foram preservados. A chave de armazenamento continua a mesma; uma tentativa em andamento pode ser retomada. Rodadas já iniciadas mantêm suas questões originais; para praticar os novos assuntos, inicie uma nova rodada após terminar ou substituir a anterior. TLSAR, missões salvas e calculadora não são modificados por esta ampliação.
+Cada questão tem quatro alternativas, uma resposta correta, explicação e arquivo/página de referência. As páginas indicadas são as páginas do PDF, contando desde a primeira. Leituras de tabelas e figuras foram conferidas visualmente; cálculos usam unidades e arredondamentos explicitados no enunciado. A seleção por assunto, embaralhamento, correção, bloqueio de questões respondidas, retorno às puladas e nota de 0 a 10 permanecem iguais.
