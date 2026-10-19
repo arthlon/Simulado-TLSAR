@@ -44,13 +44,19 @@
  }
  const finite=(v,label)=>{if(!Number.isFinite(v))throw Error(label+' inválido.');return v;};
  function validate(model){
-  const {state,raw}=model||{};if(!state?.drift||!state?.search||!raw?.calculated?.drift||!raw?.calculated?.search)throw Error('Calcule a deriva e a área de busca com os dados atuais antes de exportar.');
-  if(!state.drift.datum)throw Error('Informe o LKP e recalcule a deriva para plotar DATUM 1 e DATUM 2.');
-  const d=state.drift.datum,t=state.search;if(!d.lkp)throw Error('LKP ausente.');
-  for(const v of [d.latitude,d.longitude,d.lkp.latitude,d.lkp.longitude,state.drift.speed,d.distance])finite(v,'Dado da deriva');
-  if(!Array.isArray(t.units)||!t.units.length||t.units.length>30)throw Error('Informe entre 1 e 30 meios de busca.');
-  for(const key of ['area','side','radius'])if(finite(t[key],'Área')<=0)throw Error('A área deve ser positiva.');
-  for(const u of t.units)for(const key of ['wu','fw','wc','spacing','coverage','speed','time','area'])finite(u.result?.[key],'Dado do meio');
+  const {state,raw}=model||{};
+  if(!state?.drift||!raw?.calculated?.drift)throw Error('Calcule a deriva com os dados atuais antes de exportar.');
+  const r=state.drift,d=r.datum,t=state.search;
+  for(const key of ['time','currentSpeed','currentDirection','windSpeed','windDirection','leeway','leewayDirection','speed','distance'])finite(r[key],'Dado da deriva');
+  if(r.direction!==null)finite(r.direction,'Direção da deriva');
+  if(d){if(!d.lkp)throw Error('LKP ausente.');for(const v of [d.latitude,d.longitude,d.lkp.latitude,d.lkp.longitude,d.distance])finite(v,'Posição');}
+  if(raw.calculated.search&&!t)throw Error('Recalcule a área de busca antes de exportar.');
+  if(t){
+   if(!raw.calculated.search)throw Error('Recalcule a área de busca antes de exportar.');
+   if(!Array.isArray(t.units)||!t.units.length||t.units.length>30)throw Error('Informe entre 1 e 30 meios de busca.');
+   for(const key of ['area','side','radius'])if(finite(t[key],'Área')<=0)throw Error('A área deve ser positiva.');
+   for(const u of t.units)for(const key of ['wu','fw','wc','spacing','coverage','speed','time','area'])finite(u.result?.[key],'Dado do meio');
+  }
   return model;
  }
  const normalizeLon=x=>((x+180)%360+360)%360-180;
@@ -59,8 +65,8 @@
  function position(point){return coordinate(point.latitude,'lat')+'  /  '+coordinate(point.longitude,'lon');}
  function moment(value){return String(value||'').replace('T',' ');}
  function geometry(model){
-  validate(model);if(!REF)throw Error('A folha de referência não carregou. Recarregue a página.');
-  const r=model.state.drift,d=r.datum,R=model.state.search.radius,frame={...REF.frame},bounds={...REF.bounds};
+  validate(model);if(!model.state.drift.datum)throw Error('Informe o LKP para plotar a deriva.');if(!REF)throw Error('A folha de referência não carregou. Recarregue a página.');
+  const r=model.state.drift,d=r.datum,R=model.state.search?.radius||0,frame={...REF.frame},bounds={...REF.bounds};
   const path=[];let reference=near(d.lkp.longitude,(bounds.west+bounds.east)/2);
   for(let i=0;i<=64;i++){const pt=M.rhumbDestination(d.lkp.latitude,d.lkp.longitude,d.distance*i/64,d.direction);pt.longitude=near(pt.longitude,reference);reference=pt.longitude;path.push(pt);}
   const center={latitude:d.latitude,longitude:reference};
@@ -70,27 +76,29 @@
   const unproject=([x,y])=>({latitude:(2*Math.atan(Math.exp(northing-(y-frame.y)/unit))-Math.PI/2)/RAD,longitude:bounds.west+(x-frame.x)/unit/RAD});
   const d2=project(center),radiusMM=R*unit/(EARTH*Math.cos(d.latitude*RAD));
   // Nominal planning shapes use the local distance scale at DATUM 2.
-  const square=[[-1,-1],[1,-1],[1,1],[-1,1]].map(([x,y])=>unproject([d2[0]+x*radiusMM,d2[1]+y*radiusMM]));
-  const ring=Array.from({length:181},(_,i)=>{const a=i*2*RAD;return unproject([d2[0]+radiusMM*Math.sin(a),d2[1]-radiusMM*Math.cos(a)]);});
+  const square=R?[[-1,-1],[1,-1],[1,1],[-1,1]].map(([x,y])=>unproject([d2[0]+x*radiusMM,d2[1]+y*radiusMM])):[];
+  const ring=R?Array.from({length:181},(_,i)=>{const a=i*2*RAD;return unproject([d2[0]+radiusMM*Math.sin(a),d2[1]-radiusMM*Math.cos(a)]);}):[];
   const visible=point=>{const [x,y]=project(point);return x>=frame.x-1e-8&&x<=frame.x+frame.w+1e-8&&y>=frame.y-1e-8&&y<=frame.y+frame.h+1e-8;};
   return {frame,bounds,center,path,ring,square,project,unproject,visible,radiusMM,d1:project(path[0]),d2};
  }
  function header(page,model,number,label){
-  page.text(12,11,'MISSÃO LSAR',10,true,C.teal);page.text(page.w-12,11,number+' / 2',8,false,C.muted,'right');page.text(12,20,label,17,true);
+  page.text(12,11,'MISSÃO LSAR',10,true,C.teal);page.text(page.w-12,11,number+' / '+(model.state.drift.datum?2:1),8,false,C.muted,'right');page.text(12,20,label,17,true);
   page.text(12,27,ellipsis(model.title||'Missão sem título',page.w-24,10),10);page.line(12,31,page.w-12,31,C.line,.3);
  }
  function row(page,x,y,label,value,available=186){page.text(x,y,label,8,false,C.muted);page.text(x+34,y,ellipsis(value,available-34,9),9,true);}
  function summary(model){
-  const page=new Page(210,297),r=model.state.drift,d=r.datum,t=model.state.search,raw=model.raw.drift;header(page,model,1,'Resumo da deriva e da área de busca');
+  const page=new Page(210,297),r=model.state.drift,d=r.datum,t=model.state.search,raw=model.raw.drift;header(page,model,1,t?'Resumo da deriva e da área de busca':'Resumo da deriva');
   page.text(12,38,'DERIVA',9,true,C.teal);page.text(198,38,'Vetores: velocidade (nós) / direção (°)',7.5,false,C.muted,'right');
   row(page,12,45,'Incidente',moment(raw.incident));row(page,12,51,'Chegada',moment(raw.arrival));row(page,12,57,'Atraso',num(r.time)+' h');row(page,12,63,'Corrente',num(r.currentSpeed)+' nós / '+num(r.currentDirection,2)+'°');
   row(page,12,69,'Vento',num(r.windSpeed)+' nós / '+num(r.windDirection,2)+'° ('+(raw.windConvention==='from'?'de onde sopra':'para onde sopra')+')');
   row(page,12,75,'Leeway',num(r.leeway)+' nós / '+num(r.leewayDirection,2)+'° ('+(raw.leewayMode==='auto'?'automático':'manual')+')');row(page,12,81,'Objeto',(model.objectLabel||raw.leewayCondition||'Manual').replace(/\s*\(.*/,''));
   row(page,12,87,'Deriva resultante',num(r.speed)+' nós / '+(r.direction===null?'Indeterminada':num(r.direction,2)+'°'));
-  row(page,12,93,'Deslocamento',num(d.distance)+' MN desde o LKP');
+  row(page,12,93,'Deslocamento',num(d?d.distance:r.distance)+(d?' MN desde o LKP':' MN desde o incidente'));
   page.text(12,104,'POSIÇÕES',9,true,C.teal);
-  page.text(12,111,'DATUM 1 - LKP',8,true,C.blue);page.text(12,117,position(d.lkp),8.5,true);page.text(12,123,moment(d.startTime),8,false,C.muted);
+  if(d){page.text(12,111,'DATUM 1 - LKP',8,true,C.blue);page.text(12,117,position(d.lkp),8.5,true);page.text(12,123,moment(d.startTime),8,false,C.muted);
   page.text(108,111,'DATUM 2 - estimado na chegada',8,true,C.teal);page.text(108,117,position(d),8.5,true);page.text(108,123,moment(d.endTime),8,false,C.muted);
+  }else{page.text(12,112,'LKP não informado. DATUM e carta de plotagem indisponíveis.',9,false,C.muted);}
+  if(t){
   const metrics=[['At - soma nominal',num(t.area)+' MN²'],['Lado do quadrado',num(t.side)+' MN'],['Raio R = sqrt(At) / 2',num(t.radius)+' MN'],['Deriva desde o incidente',num(r.distance)+' MN']];
   metrics.forEach(([label,value],i)=>{const x=12+(i%2)*96,y=131+Math.floor(i/2)*19;page.rect(x,y,90,16,C.pale);page.text(x+3,y+5,label,7.5,false,C.muted);page.text(x+3,y+12,value,12,true);});
   page.text(12,175,'DADOS DA ÁREA DE BUSCA - MEIOS INDEPENDENTES',9,true,C.teal);
@@ -103,19 +111,26 @@
   });
   page.text(12,281,'Wc = Wu x fw | C = Wc / S | A = S x V x T | At = soma Ai | lado = 2R.',7,false,C.muted);
   page.text(12,285,'T: horas efetivas de busca. C e fw: sem unidade. Direções referidas ao norte verdadeiro.',7,false,C.muted);
-  page.line(12,288,198,288,C.line,.2);page.text(12,293,'Corrente e leeway constantes. Área nominal: não desconta sobreposições.',7,false,C.muted);return page;
+  }else{
+   page.rect(12,131,186,29,C.pale);page.text(16,139,'ÁREA DE BUSCA NÃO CALCULADA',9,true,C.teal);
+   page.text(16,147,'Este exercício contém somente os dados de deriva.',9);
+   page.text(16,154,'Área nominal, raio e quadrado não foram incluídos.',8,false,C.muted);
+   page.text(12,175,'Distância derivada = velocidade da deriva x atraso.',9,false,C.muted);
+   page.text(12,183,'Corrente e leeway somados vetorialmente. Direções referidas ao norte verdadeiro.',8,false,C.muted);
+  }
+  page.line(12,288,198,288,C.line,.2);page.text(12,293,t?'Corrente e leeway constantes. Área nominal: não desconta sobreposições.':'Corrente e leeway constantes; sem estimativa da incerteza da posição.',7,false,C.muted);return page;
  }
  function chart(model,g){
   const page=new Page(),d=model.state.drift.datum,f=g.frame;page.reference();
   page.text(12,7,ellipsis(model.title||'Missão sem título',158,8,true),8,true);
   page.text(285,7,'DATUM 1 = LKP | DATUM 2 = chegada',7,false,C.muted,'right');
-  page.line(175,6.5,180,6.5,C.gold,.5);page.text(182,7.2,'Área',6.5,false,C.muted);page.line(197,6.5,202,6.5,C.purple,.4,[1,1]);page.text(204,7.2,'R',6.5,false,C.muted);
+  if(model.state.search){page.line(175,6.5,180,6.5,C.gold,.5);page.text(182,7.2,'Área',6.5,false,C.muted);page.line(197,6.5,202,6.5,C.purple,.4,[1,1]);page.text(204,7.2,'R',6.5,false,C.muted);}
   page.clip(f);
   if(g.visible(g.path[0])){
    page.line(f.x+f.w,g.d1[1],g.d1[0],g.d1[1],C.blue,.22,[1.2,1.2]);
    page.line(g.d1[0],f.y+f.h,g.d1[0],g.d1[1],C.blue,.22,[1.2,1.2]);
   }
-  const sq=g.square.map(g.project);page.path([...sq,sq[0]],C.gold,.5);
+  if(g.square.length){const sq=g.square.map(g.project);page.path([...sq,sq[0]],C.gold,.5);}
   page.path(g.ring.map(g.project),C.purple,.4,null,false,[1.4,1]);const route=g.path.map(g.project);page.path(route,C.teal,.55,null,false,[2,1]);
   if(d.distance>0){const mid=route[32],a=route[31],dx=mid[0]-a[0],dy=mid[1]-a[1],length=Math.hypot(dx,dy);if(length>1e-9){const ux=dx/length,uy=dy/length;page.path([[mid[0]+ux*1.8,mid[1]+uy*1.8],[mid[0]-ux*1.4-uy*.8,mid[1]-uy*1.4+ux*.8],[mid[0]-ux*1.4+uy*.8,mid[1]-uy*1.4-ux*.8]],C.teal,.2,C.teal,true);}}
   if(g.visible(g.path[0]))page.circle(...g.d1,1.8,C.blue,'#ffffff',.55);
@@ -127,9 +142,9 @@
   page.line(12,201.5,285,201.5,C.line,.15);
   page.text(12,206,"Graduação: 24°00' a 24°46' S | 044°00' a 043°00' O. Mercator; recorte nos limites.",7,false,C.muted);
   const outside=[];if(!g.visible(g.path[0]))outside.push('D1');if(!g.visible(g.center))outside.push('D2');
-  page.text(285,206,outside.length?'Fora da folha: '+outside.join(', ')+'.':'R = '+num(model.state.search.radius)+' MN | área no DATUM 2.',7,false,C.muted,'right');
+  page.text(285,206,outside.length?'Fora da folha: '+outside.join(', ')+'.':model.state.search?'R = '+num(model.state.search.radius)+' MN | área no DATUM 2.':'Somente deriva; área de busca não calculada.',7,false,C.muted,'right');
   return page;
  }
- function build(model){validate(model);const g=geometry(model);return pdf([summary(model),chart(model,g)],model.title||'Resumo SAR');}
+ function build(model){validate(model);const pages=[summary(model)];if(model.state.drift.datum)pages.push(chart(model,geometry(model)));return pdf(pages,model.title||'Resumo SAR');}
  const api=Object.freeze({build,geometry,validate,coordinate,width});root.SARPDF=api;if(typeof module!=='undefined'&&module.exports)module.exports=api;
 })(typeof window!=='undefined'?window:globalThis);

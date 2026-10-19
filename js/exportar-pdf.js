@@ -8,7 +8,7 @@
  function savedModel(item){return {title:item.title,raw:item.data,state:api.evaluate(item.data).state,objectLabel:objectLabel(item.data)};}
  function validate(data){if(!PDF)throw Error('O recurso de PDF não carregou. Recarregue a página e tente novamente.');PDF.validate(data);}
  function refresh(){
-  let message;try{validate(model());available=true;message='PDF de 2 páginas: resumo dos cálculos e carta de plotagem.';}catch(error){available=false;message=error.message;}
+  let message;try{const data=model();validate(data);available=true;message=data.state.drift.datum?'PDF de 2 páginas: resumo dos cálculos e carta de plotagem.':'PDF de 1 página: resumo dos cálculos. Informe o LKP para incluir a carta.';}catch(error){available=false;message=error.message;}
   buttons.forEach(button=>{button.disabled=!available;button.title=message;});$('pdf-export-status').textContent=message;
  }
  function downloadPDF(data){
@@ -23,7 +23,7 @@
  });
  buttons.forEach(button=>button.addEventListener('click',()=>{
   if(!available){refresh();return;}
-  try{downloadPDF(model());$('pdf-export-status').textContent='PDF gerado com 2 páginas. DATUM 1 = LKP; DATUM 2 = posição estimada na chegada.';}catch(error){$('pdf-export-status').textContent='Não foi possível gerar o PDF. '+error.message;}
+  try{const data=model();downloadPDF(data);$('pdf-export-status').textContent=data.state.drift.datum?'PDF gerado com 2 páginas. DATUM 1 = LKP; DATUM 2 = posição estimada na chegada.':'PDF gerado com 1 página: resumo dos cálculos, sem LKP informado.';}catch(error){$('pdf-export-status').textContent='Não foi possível gerar o PDF. '+error.message;}
  }));
  document.addEventListener('lsar:map-state',refresh);refresh();
 })();
