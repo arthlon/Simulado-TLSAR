@@ -14,27 +14,27 @@
  function rgb(hex){return [1,3,5].map(i=>(parseInt(hex.slice(i,i+2),16)/255).toFixed(4)).join(' ');}
  const p=n=>(n*PT).toFixed(3),q=n=>Number(n).toFixed(3);
  class Page{
-  constructor(){this.ops=[];}
+  constructor(w=W,h=H){this.w=w;this.h=h;this.ops=[];}
   text(x,y,s,size=9,bold=false,color=C.ink,align='left'){
    if(align==='right')x-=width(s,size,bold);else if(align==='center')x-=width(s,size,bold)/2;
-   this.ops.push(`BT /${bold?'FB':'FR'} ${q(size)} Tf ${rgb(color)} rg 1 0 0 1 ${p(x)} ${p(H-y)} Tm ${literal(s)} Tj ET`);
+   this.ops.push(`BT /${bold?'FB':'FR'} ${q(size)} Tf ${rgb(color)} rg 1 0 0 1 ${p(x)} ${p(this.h-y)} Tm ${literal(s)} Tj ET`);
   }
   line(x1,y1,x2,y2,color=C.line,weight=.2,dash=[]){this.path([[x1,y1],[x2,y2]],color,weight,null,false,dash);}
-  rect(x,y,w,h,fill=null,stroke=null,weight=.2){this.ops.push(`q ${fill?rgb(fill)+' rg ':''}${stroke?rgb(stroke)+' RG '+p(weight)+' w ':''}${p(x)} ${p(H-y-h)} ${p(w)} ${p(h)} re ${fill&&stroke?'B':fill?'f':'S'} Q`);}
+  rect(x,y,w,h,fill=null,stroke=null,weight=.2){this.ops.push(`q ${fill?rgb(fill)+' rg ':''}${stroke?rgb(stroke)+' RG '+p(weight)+' w ':''}${p(x)} ${p(this.h-y-h)} ${p(w)} ${p(h)} re ${fill&&stroke?'B':fill?'f':'S'} Q`);}
   path(points,stroke=C.ink,weight=.25,fill=null,closed=false,dash=[]){
    if(!points.length)return;let s=`q ${rgb(stroke)} RG ${p(weight)} w [${dash.map(p).join(' ')}] 0 d `+(fill?rgb(fill)+' rg ':'');
-   s+=points.map(([x,y],i)=>`${p(x)} ${p(H-y)} ${i?'l':'m'}`).join(' ');if(closed)s+=' h';s+=' '+(fill?'B':'S')+' Q';this.ops.push(s);
+   s+=points.map(([x,y],i)=>`${p(x)} ${p(this.h-y)} ${i?'l':'m'}`).join(' ');if(closed)s+=' h';s+=' '+(fill?'B':'S')+' Q';this.ops.push(s);
   }
   circle(x,y,r,stroke=C.ink,fill=null,weight=.3){const pts=Array.from({length:97},(_,i)=>{const a=i*Math.PI/48;return [x+r*Math.cos(a),y+r*Math.sin(a)]});this.path(pts,stroke,weight,fill,true);}
-  reference(){this.ops.push(`q ${p(W)} 0 0 ${p(H)} 0 0 cm /REF Do Q`);}
-  clip(frame){this.ops.push(`q ${p(frame.x)} ${p(H-frame.y-frame.h)} ${p(frame.w)} ${p(frame.h)} re W n`);}
+  reference(){this.ops.push(`q ${p(this.w)} 0 0 ${p(this.h)} 0 0 cm /REF Do Q`);}
+  clip(frame){this.ops.push(`q ${p(frame.x)} ${p(this.h-frame.y-frame.h)} ${p(frame.w)} ${p(frame.h)} re W n`);}
   unclip(){this.ops.push('Q');}
   stream(){return this.ops.join('\n')+'\n';}
  }
  function pdf(pages,title){
   const imageId=5+pages.length*2;
   const objects=['<< /Type /Catalog /Pages 2 0 R >>','<< /Type /Pages /Count '+pages.length+' /Kids ['+pages.map((_,i)=>(5+i*2)+' 0 R').join(' ')+'] >>','<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>','<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>'];
-  pages.forEach((page,i)=>{const stream=page.stream();objects.push(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${p(W)} ${p(H)}] /Resources << /Font << /FR 3 0 R /FB 4 0 R >> /XObject << /REF ${imageId} 0 R >> >> /Contents ${6+i*2} 0 R >>`);objects.push(`<< /Length ${stream.length} >>\nstream\n${stream}endstream`);});
+  pages.forEach((page,i)=>{const stream=page.stream();objects.push(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${p(page.w)} ${p(page.h)}] /Resources << /Font << /FR 3 0 R /FB 4 0 R >> /XObject << /REF ${imageId} 0 R >> >> /Contents ${6+i*2} 0 R >>`);objects.push(`<< /Length ${stream.length} >>\nstream\n${stream}endstream`);});
   const image=typeof atob==='function'?atob(REF.data):Buffer.from(REF.data,'base64').toString('latin1');
   objects.push(`<< /Type /XObject /Subtype /Image /Width ${REF.width} /Height ${REF.height} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /FlateDecode /Length ${image.length} >>\nstream\n${image}\nendstream`);
   objects.push('<< /Title '+literal(title)+' /Author (Missao LSAR) /Creator (Calculadora SAR) >>');
@@ -76,32 +76,33 @@
   return {frame,bounds,center,path,ring,square,project,unproject,visible,radiusMM,d1:project(path[0]),d2};
  }
  function header(page,model,number,label){
-  page.text(12,11,'MISSÃO LSAR',10,true,C.teal);page.text(285,11,number+' / 2',8,false,C.muted,'right');page.text(12,20,label,17,true);
-  page.text(12,27,ellipsis(model.title||'Missão sem título',273,10),10);page.line(12,31,285,31,C.line,.3);
+  page.text(12,11,'MISSÃO LSAR',10,true,C.teal);page.text(page.w-12,11,number+' / 2',8,false,C.muted,'right');page.text(12,20,label,17,true);
+  page.text(12,27,ellipsis(model.title||'Missão sem título',page.w-24,10),10);page.line(12,31,page.w-12,31,C.line,.3);
  }
- function footer(page,left,right){page.line(12,199,285,199,C.line,.2);page.text(12,204,left,7,false,C.muted);page.text(285,204,right,7,false,C.muted,'right');}
- function row(page,x,y,label,value,available=132){page.text(x,y,label,8,false,C.muted);page.text(x+30,y,ellipsis(value,available-30,8.5),8.5,true);}
+ function row(page,x,y,label,value,available=186){page.text(x,y,label,8,false,C.muted);page.text(x+34,y,ellipsis(value,available-34,9),9,true);}
  function summary(model){
-  const page=new Page(),r=model.state.drift,d=r.datum,t=model.state.search,raw=model.raw.drift;header(page,model,1,'Resumo da deriva e da área de busca');
-  page.text(12,38,'DERIVA',9,true,C.teal);page.text(155,38,'POSIÇÕES E RESULTANTE',9,true,C.teal);
-  row(page,12,44,'Incidente',moment(raw.incident));row(page,12,49,'Chegada',moment(raw.arrival));row(page,12,54,'Tempo decorrido',num(r.time)+' h');row(page,12,59,'Corrente',num(r.currentSpeed)+' nós para '+num(r.currentDirection,2)+'°V');
-  row(page,12,64,'Vento',num(r.windSpeed)+' nós / '+num(r.windDirection,2)+'°V ('+(raw.windConvention==='from'?'de onde sopra':'para onde sopra')+')');
-  row(page,12,69,'Leeway',num(r.leeway)+' nós para '+num(r.leewayDirection,2)+'°V ('+(raw.leewayMode==='auto'?'automático':'manual')+')');row(page,12,74,'Objeto',(model.objectLabel||raw.leewayCondition||'Manual').replace(/\s*\(.*/,''));
-  page.text(155,44,'DATUM 1 - LKP',8,true,C.blue);page.text(155,49,position(d.lkp),9,true);page.text(155,54,moment(d.startTime),8,false,C.muted);
-  page.text(155,61,'DATUM 2 - estimado na chegada',8,true,C.teal);page.text(155,66,position(d),9,true);page.text(155,71,moment(d.endTime),8,false,C.muted);
-  page.text(155,76,ellipsis(num(r.speed)+' nós / '+(r.direction===null?'rumo indeterminado':num(r.direction,2)+'°V')+' / '+num(d.distance)+' MN em '+num(d.time)+' h desde o LKP',130,8.5,true),8.5,true);
+  const page=new Page(210,297),r=model.state.drift,d=r.datum,t=model.state.search,raw=model.raw.drift;header(page,model,1,'Resumo da deriva e da área de busca');
+  page.text(12,38,'DERIVA',9,true,C.teal);
+  row(page,12,45,'Incidente',moment(raw.incident));row(page,12,51,'Chegada',moment(raw.arrival));row(page,12,57,'Tempo decorrido',num(r.time)+' h');row(page,12,63,'Corrente',num(r.currentSpeed)+' nós para '+num(r.currentDirection,2)+'°V');
+  row(page,12,69,'Vento',num(r.windSpeed)+' nós / '+num(r.windDirection,2)+'°V ('+(raw.windConvention==='from'?'de onde sopra':'para onde sopra')+')');
+  row(page,12,75,'Leeway',num(r.leeway)+' nós para '+num(r.leewayDirection,2)+'°V ('+(raw.leewayMode==='auto'?'automático':'manual')+')');row(page,12,81,'Objeto',(model.objectLabel||raw.leewayCondition||'Manual').replace(/\s*\(.*/,''));
+  page.text(12,92,'POSIÇÕES E RESULTANTE',9,true,C.teal);
+  page.text(12,99,'DATUM 1 - LKP',8,true,C.blue);page.text(12,105,position(d.lkp),8.5,true);page.text(12,111,moment(d.startTime),8,false,C.muted);
+  page.text(108,99,'DATUM 2 - estimado na chegada',8,true,C.teal);page.text(108,105,position(d),8.5,true);page.text(108,111,moment(d.endTime),8,false,C.muted);
+  page.text(12,119,ellipsis(num(r.speed)+' nós / '+(r.direction===null?'rumo indeterminado':num(r.direction,2)+'°V')+' / '+num(d.distance)+' MN em '+num(d.time)+' h desde o LKP',186,9,true),9,true);
   const metrics=[['At - soma nominal',num(t.area)+' MN²'],['Lado do quadrado',num(t.side)+' MN'],['Raio R = sqrt(At) / 2',num(t.radius)+' MN'],['Deriva desde o incidente',num(r.distance)+' MN']];
-  metrics.forEach(([label,value],i)=>{const x=12+i*69;page.rect(x,81,66,14,C.pale);page.text(x+3,86,label,7,false,C.muted);page.text(x+3,92,value,12,true);});
-  page.text(12,102,'DADOS DA ÁREA DE BUSCA - MEIOS INDEPENDENTES',9,true,C.teal);
-  const cols=[['Meio / fonte',68],['Wu (MN)',23],['fw',14],['Wc (MN)',24],['S (MN)',24],['C',18],['V (nós)',23],['T (h)',23],['A (MN²)',35]];cols[0][1]+=273-cols.reduce((s,c)=>s+c[1],0);
-  let x=12;page.rect(12,105,273,6,C.navy);cols.forEach(([label,w],i)=>{page.text(i?x+w-2:x+2,109,label,7.5,true,'#ffffff',i?'right':'left');x+=w;});
-  const height=Math.min(8.5,83/t.units.length),font=height<4?6.5:height<6?8:9;
-  t.units.forEach((unit,i)=>{const y=111+i*height,a=unit.result,platform={merchant:'Navio mercante',helicopter:'Helicóptero',fixed:'Asa fixa',manual:'Manual'}[unit.platform]||'Tabela';if(i%2===0)page.rect(12,y,273,height,'#f3f7f8');page.line(12,y+height,285,y+height,'#dce5e9',.13);
+  metrics.forEach(([label,value],i)=>{const x=12+(i%2)*96,y=125+Math.floor(i/2)*19;page.rect(x,y,90,16,C.pale);page.text(x+3,y+5,label,7.5,false,C.muted);page.text(x+3,y+12,value,12,true);});
+  page.text(12,169,'DADOS DA ÁREA DE BUSCA - MEIOS INDEPENDENTES',9,true,C.teal);
+  const cols=[['Meio / fonte',54],['Wu (MN)',17],['fw',11],['Wc (MN)',18],['S (MN)',17],['C',12],['V (nós)',17],['T (h)',15],['A (MN²)',25]];
+  let x=12;page.rect(12,173,186,6,C.navy);cols.forEach(([label,w],i)=>{page.text(i?x+w-1.5:x+1.5,177,label,6.5,true,'#ffffff',i?'right':'left');x+=w;});
+  const height=Math.min(8.5,96/t.units.length),font=height<4?6.5:height<6?7.5:8.5;
+  t.units.forEach((unit,i)=>{const y=179+i*height,a=unit.result,platform={merchant:'Navio mercante',helicopter:'Helicóptero',fixed:'Asa fixa',manual:'Manual'}[unit.platform]||'Tabela';if(i%2===0)page.rect(12,y,186,height,'#f3f7f8');page.line(12,y+height,198,y+height,'#dce5e9',.13);
    const values=[unit.name+' / '+platform,...['wu','fw','wc','spacing','coverage','speed','time','area'].map(k=>num(a[k]))];let x=12;
-   cols.forEach(([,w],j)=>{page.text(j?x+w-2:x+2,y+height*.5+font/PT*.32,ellipsis(values[j],w-4,font,j===0),font,j===0,C.ink,j?'right':'left');x+=w;});
+   cols.forEach(([,w],j)=>{page.text(j?x+w-1.5:x+1.5,y+height*.5+font/PT*.32,ellipsis(values[j],w-3,font,j===0),font,j===0,C.ink,j?'right':'left');x+=w;});
   });
-  page.text(12,197,'Wc = Wu x fw | C = Wc / S | A = S x V x T | At = soma Ai | lado = 2R. T: horas efetivas de busca. C e fw: sem unidade.',7,false,C.muted);
-  footer(page,'Valores arredondados na exibição. Modelo com corrente e leeway constantes.','Área nominal: não desconta sobreposições.');return page;
+  page.text(12,281,'Wc = Wu x fw | C = Wc / S | A = S x V x T | At = soma Ai | lado = 2R.',7,false,C.muted);
+  page.text(12,285,'T: horas efetivas de busca. C e fw: sem unidade. Valores arredondados na exibição.',7,false,C.muted);
+  page.line(12,288,198,288,C.line,.2);page.text(12,293,'Corrente e leeway constantes. Área nominal: não desconta sobreposições.',7,false,C.muted);return page;
  }
  function chart(model,g){
   const page=new Page(),d=model.state.drift.datum,f=g.frame;page.reference();
@@ -109,6 +110,10 @@
   page.text(285,7,'DATUM 1 = LKP | DATUM 2 = chegada',7,false,C.muted,'right');
   page.line(175,6.5,180,6.5,C.gold,.5);page.text(182,7.2,'Área',6.5,false,C.muted);page.line(197,6.5,202,6.5,C.purple,.4,[1,1]);page.text(204,7.2,'R',6.5,false,C.muted);
   page.clip(f);
+  if(g.visible(g.path[0])){
+   page.line(f.x+f.w,g.d1[1],g.d1[0],g.d1[1],C.blue,.22,[1.2,1.2]);
+   page.line(g.d1[0],f.y+f.h,g.d1[0],g.d1[1],C.blue,.22,[1.2,1.2]);
+  }
   const sq=g.square.map(g.project);page.path([...sq,sq[0]],C.gold,.5);
   page.path(g.ring.map(g.project),C.purple,.4,null,false,[1.4,1]);const route=g.path.map(g.project);page.path(route,C.teal,.55,null,false,[2,1]);
   if(d.distance>0){const mid=route[32],a=route[31],dx=mid[0]-a[0],dy=mid[1]-a[1],length=Math.hypot(dx,dy);if(length>1e-9){const ux=dx/length,uy=dy/length;page.path([[mid[0]+ux*1.8,mid[1]+uy*1.8],[mid[0]-ux*1.4-uy*.8,mid[1]-uy*1.4+ux*.8],[mid[0]-ux*1.4+uy*.8,mid[1]-uy*1.4-ux*.8]],C.teal,.2,C.teal,true);}}
