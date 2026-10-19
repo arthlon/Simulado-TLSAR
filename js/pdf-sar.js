@@ -63,15 +63,17 @@
   const r=model.state.drift,d=r.datum,R=model.state.search.radius,frame={...REF.frame},bounds={...REF.bounds};
   const path=[];let reference=near(d.lkp.longitude,(bounds.west+bounds.east)/2);
   for(let i=0;i<=64;i++){const pt=M.rhumbDestination(d.lkp.latitude,d.lkp.longitude,d.distance*i/64,d.direction);pt.longitude=near(pt.longitude,reference);reference=pt.longitude;path.push(pt);}
-  const center={latitude:d.latitude,longitude:reference},ring=[];
-  for(let i=0;i<=180;i++){const pt=M.rhumbDestination(d.latitude,d.longitude,R,i*2);pt.longitude=near(pt.longitude,reference);ring.push(pt);}
-  const north=M.rhumbDestination(d.latitude,d.longitude,R,0).latitude,south=M.rhumbDestination(d.latitude,d.longitude,R,180).latitude,east=near(M.rhumbDestination(d.latitude,d.longitude,R,90).longitude,reference),west=near(M.rhumbDestination(d.latitude,d.longitude,R,270).longitude,reference);
-  const square=[{latitude:north,longitude:west},{latitude:north,longitude:east},{latitude:south,longitude:east},{latitude:south,longitude:west}];
-  // Calibrate to the unchanged SVG axes: 44 W -> 43 W; 24 S -> 24 46 S.
-  // The source has independent horizontal/vertical scales: never fit or rotate it.
-  const project=point=>[frame.x+(point.longitude-bounds.west)/(bounds.east-bounds.west)*frame.w,frame.y+(bounds.north-point.latitude)/(bounds.north-bounds.south)*frame.h];
+  const center={latitude:d.latitude,longitude:reference};
+  // One Mercator scale for both axes. Coordinate limits never fit the mission.
+  const merc=lat=>Math.log(Math.tan(Math.PI/4+lat*RAD/2)),northing=merc(bounds.north),unit=frame.w/((bounds.east-bounds.west)*RAD);
+  const project=point=>[frame.x+(point.longitude-bounds.west)*RAD*unit,frame.y+(northing-merc(point.latitude))*unit];
+  const unproject=([x,y])=>({latitude:(2*Math.atan(Math.exp(northing-(y-frame.y)/unit))-Math.PI/2)/RAD,longitude:bounds.west+(x-frame.x)/unit/RAD});
+  const d2=project(center),radiusMM=R*unit/(EARTH*Math.cos(d.latitude*RAD));
+  // Nominal planning shapes use the local distance scale at DATUM 2.
+  const square=[[-1,-1],[1,-1],[1,1],[-1,1]].map(([x,y])=>unproject([d2[0]+x*radiusMM,d2[1]+y*radiusMM]));
+  const ring=Array.from({length:181},(_,i)=>{const a=i*2*RAD;return unproject([d2[0]+radiusMM*Math.sin(a),d2[1]-radiusMM*Math.cos(a)]);});
   const visible=point=>{const [x,y]=project(point);return x>=frame.x-1e-8&&x<=frame.x+frame.w+1e-8&&y>=frame.y-1e-8&&y<=frame.y+frame.h+1e-8;};
-  return {frame,bounds,center,path,ring,square,project,visible,d1:project(path[0]),d2:project(center)};
+  return {frame,bounds,center,path,ring,square,project,unproject,visible,radiusMM,d1:project(path[0]),d2};
  }
  function header(page,model,number,label){
   page.text(12,11,'MISSÃO LSAR',10,true,C.teal);page.text(285,11,number+' / 2',8,false,C.muted,'right');page.text(12,20,label,17,true);
@@ -117,7 +119,7 @@
   else{if(g.visible(g.path[0]))label(g.d1,'DATUM 1');if(g.visible(g.center))label(g.d2,'DATUM 2',Math.abs(g.d1[1]-g.d2[1])<9);}
   page.unclip();
   page.line(12,201.5,285,201.5,C.line,.15);
-  page.text(12,206,"Escala original: 24°00' a 24°46' S | 044°00' a 043°00' O. Desenho limitado à folha.",7,false,C.muted);
+  page.text(12,206,"Graduação: 24°00' a 24°46' S | 044°00' a 043°00' O. Mercator; recorte nos limites.",7,false,C.muted);
   const outside=[];if(!g.visible(g.path[0]))outside.push('D1');if(!g.visible(g.center))outside.push('D2');
   page.text(285,206,outside.length?'Fora da folha: '+outside.join(', ')+'.':'R = '+num(model.state.search.radius)+' MN | área no DATUM 2.',7,false,C.muted,'right');
   return page;

@@ -152,15 +152,35 @@
   const zoom=Number($('rose-zoom').value);$('rose-graphic').style.width=zoom+'%';$('rose-zoom-value').textContent=zoom+'%';
  }
  function metric(label,value,sub=''){return `<div class="calc-metric"><span>${label}</span><strong>${value}</strong>${sub?`<small>${sub}</small>`:''}</div>`;}
+ function resolveDrift(input){
+  const raw={...input},condition=D.leewayConditions.find(c=>c.id===raw.leewayCondition);if(!condition)throw Error('Selecione o objeto/condição do leeway.');
+  if(!['auto','manual'].includes(raw.leewayMode))throw Error('Selecione o modo automático ou manual do leeway.');
+  if(raw.leewayMode==='auto'){const curve=D.leewayDigitization.curves.find(c=>c.id===condition.id);if(!curve)throw Error('O modo automático exige uma condição de balsa do gráfico.');raw.leeway=M.leewayAt(raw.windSpeed,curve.points).toFixed(2);}
+  return {raw,condition:condition.label,result:M.drift(raw)};
+ }
+ function resolveUnit(input,i){
+  const raw={...input},name=raw.name.trim()||`Meio ${i+1}`,platform=D.platforms[raw.platform],row=platform?.rows.find(r=>r.id===raw.object);
+  if(raw.platform!=='manual'){
+   if(!platform||!row)throw Error(`Meio ${i+1}: selecione o objeto da busca.`);
+   if(raw.visibility===''||!platform.visibility[Number(raw.visibility)])throw Error(`Meio ${i+1}: selecione a coluna de visibilidade.`);
+   raw.wu=String(row.values[Number(raw.visibility)]);
+   if(row.weatherGroup){const band=raw.weather!==''?D.weatherBands[Number(raw.weather)]:null;if(!band)throw Error(`Meio ${i+1}: selecione a faixa das condições do tempo.`);raw.fw=String(band[row.weatherGroup]);}
+  }
+  let result;try{result=M.searchUnit(raw);}catch(error){throw Error(`${name}: ${error.message}`);}
+  return {name,raw,result,source:platform?`${platform.label}; ${row.label}; visibilidade ${platform.visibility[Number(raw.visibility)]}; ${row.weatherGroup?D.weatherBands[Number(raw.weather)].label:'fw manual'}`:'Wu e fw informados manualmente'};
+ }
+ function evaluate(data){
+  if(!data||data.version!==1||!data.drift||!Array.isArray(data.units)||!data.units.length||data.units.length>30)throw Error('Dados da missão inválidos.');
+  const drift=data.calculated?.drift?resolveDrift(data.drift):null,units=data.calculated?.search?data.units.map(resolveUnit):null,search=units?{units,total:M.searchTotal(units.map(u=>u.result))}:null;
+  const state={lkp:drift?.result.datum?.lkp||null,drift:drift?.result||null,search:search?{...search.total,units:units.map((u,i)=>({id:String(i+1),name:u.name,platform:u.raw.platform,result:u.result}))}:null};
+  return {drift,search,state};
+ }
  function computeDrift(e){
   e.preventDefault();syncLeeway();$('drift-error').textContent='';lastDrift=null;$('drift-result').hidden=true;updateExport();
   try{
-   const raw=rawDrift(),condition=D.leewayConditions.find(c=>c.id===raw.leewayCondition);if(!condition)throw Error('Selecione o objeto/condição do leeway.');
-   if(!['auto','manual'].includes(raw.leewayMode))throw Error('Selecione o modo automático ou manual do leeway.');
-   if(raw.leewayMode==='auto'){const curve=D.leewayDigitization.curves.find(c=>c.id===condition.id);if(!curve)throw Error('O modo automático exige uma condição de balsa do gráfico.');M.leewayAt(raw.windSpeed,curve.points);}
-   const r=M.drift(raw);
+   const calculated=resolveDrift(rawDrift()),{raw,result:r}=calculated,condition={label:calculated.condition};
    const hh=Math.floor(r.time),mm=Math.round((r.time-hh)*60),duration=`${Math.floor((hh*60+mm)/60)}h ${String((hh*60+mm)%60).padStart(2,'0')}min`,heading=r.direction===null?'Indeterminada':`${f(r.direction,1)}°V`;
-   lastDrift={raw,condition:condition.label,result:r};
+   lastDrift=calculated;
    $('drift-result').innerHTML=`<div class="result-block"><p class="calc-summary-tag">Deriva resultante e posição estimada</p><div class="result-grid">${metric('Tempo incidente → chegada',duration,`${f(r.time,5)} horas`)}${metric('Intensidade resultante',`${f(r.speed)} nós`)}${metric('Direção para onde deriva',heading,r.direction===null?'Vetores se anulam':'Referência: norte verdadeiro')}${metric('Deriva desde o incidente',`${f(r.distance)} MN`,`${f(r.distanceKm)} km`)}</div>${datumView(r)}<div class="vector-layout"><div>${plot(r)}</div><details class="reference-details calculation-steps"><summary>Como a deriva foi calculada</summary><p>Leeway ${raw.leewayMode==='auto'?'estimado automaticamente':'manual'}: <strong>${f(r.leeway)} nós</strong> · ${esc(condition.label)}.</p><p>Direção do leeway: <strong>${f(r.leewayDirection,1)}°V</strong> ${raw.windConvention==='from'?'(vento + 180°, normalizado)':'(direção do vento já informada para onde sopra)'}.</p><div class="formula-line">Leste: ${f(r.currentSpeed)} × sen(${f(r.currentDirection)}°) + ${f(r.leeway)} × sen(${f(r.leewayDirection)}°) = ${f(r.east,6)} nós</div><div class="formula-line">Norte: ${f(r.currentSpeed)} × cos(${f(r.currentDirection)}°) + ${f(r.leeway)} × cos(${f(r.leewayDirection)}°) = ${f(r.north,6)} nós</div><div class="formula-line">Intensidade = √(Leste² + Norte²) = ${f(r.speed,6)} nós</div><div class="formula-line">Direção = atan2(Leste, Norte), normalizada = ${heading}</div><div class="formula-line">Distância = ${f(r.speed,6)} × ${f(r.time,6)} = ${f(r.distance,6)} MN</div><p class="helper">Os cálculos usam os valores completos. O arredondamento ocorre apenas na exibição.</p></details></div>${r.windSpeed===0&&r.leeway>0?'<p class="result-warn">Vento informado como zero e leeway positivo: confira se a leitura e o vento pertencem à mesma condição.</p>':''}<p class="helper">Uma direção única foi calculada no modelo de leeway alinhado ao vento. A digitalização gráfica e as condições podem introduzir incertezas não representadas aqui.</p></div>`;
    $('drift-result').hidden=false;$('drift-dirty').textContent='';save();updateExport();
   }catch(error){$('drift-error').textContent=error.message;$('drift-dirty').textContent='';}
@@ -168,29 +188,26 @@
  function computeSearch(e){
   e.preventDefault();$('search-error').textContent='';lastSearch=null;$('search-result').hidden=true;updateExport();
   try{
-   const units=[...$('units').querySelectorAll('.unit-card')].map((card,i)=>{
-    syncSpacing(card);const raw=Object.fromEntries(unitFields.map(k=>[k,val(card,k)])),name=raw.name.trim()||`Meio ${i+1}`,platform=D.platforms[raw.platform],row=platform?.rows.find(r=>r.id===raw.object);
-    if(raw.platform!=='manual'){
-     if(!platform||!row)throw Error(`Meio ${i+1}: selecione o objeto da busca.`);
-     if(raw.visibility===''||!platform.visibility[Number(raw.visibility)])throw Error(`Meio ${i+1}: selecione a coluna de visibilidade.`);
-     if(row.weatherGroup&&raw.weather==='')throw Error(`Meio ${i+1}: selecione a faixa das condições do tempo.`);
-    }
-    let r;try{r=M.searchUnit(raw);}catch(error){throw Error(`${name}: ${error.message}`);}
-    return {name,raw,result:r,source:platform?`${platform.label}; ${row.label}; visibilidade ${platform.visibility[Number(raw.visibility)]}; ${row.weatherGroup?D.weatherBands[Number(raw.weather)].label:'fw manual'}`:'Wu e fw informados manualmente'};
-   });
+   const units=[...$('units').querySelectorAll('.unit-card')].map((card,i)=>{syncSpacing(card);return resolveUnit(Object.fromEntries(unitFields.map(k=>[k,val(card,k)])),i);});
    const total=M.searchTotal(units.map(u=>u.result));lastSearch={units,total};
    $('search-result').innerHTML=`<div class="result-block"><p class="calc-summary-tag">Cobertura e área nominal de busca</p>${units.map((u,i)=>{const r=u.result;return `<details class="unit-result"><summary>${i+1}. ${esc(u.name)} · ${f(r.area)} MN²</summary><p class="helper">${esc(u.source)}</p><div class="formula-line">Wc = Wu × fw = ${f(r.wu)} × ${f(r.fw)} = <strong>${f(r.wc,6)} MN</strong></div>${r.spacingMode==='coverage'?`<div class="formula-line">S = Wc / C desejado = ${f(r.wc,6)} / ${f(r.desiredCoverage,6)} = <strong>${f(r.spacing,6)} MN</strong></div>`:''}<div class="formula-line">C = Wc / S = ${f(r.wc,6)} / ${f(r.spacing,6)} = <strong>${f(r.coverage,6)}</strong> (sem unidade)</div><p class="helper">C expressa o esforço de busca por área. Mantendo Wc, V e T, aumentar C aproxima as pernadas e reduz a área nominal pesquisada.</p><div class="formula-line">A${i+1} = S × V × T = ${f(r.spacing,6)} × ${f(r.speed)} × ${f(r.time,6)} = <strong>${f(r.area,6)} MN²</strong></div>${r.wu===0?'<p class="result-warn">A tabela retorna Wu = 0 nesta condição. A cobertura calculada é zero; a área percorrida não representa capacidade efetiva de detecção.</p>':''}</details>`;}).join('')}<div class="search-summary result-grid">${metric('At — soma nominal',`${f(total.area)} MN²`)}${metric('Lado do quadrado',`${f(total.side)} MN`)}${metric('R = √At / 2',`${f(total.radius)} MN`,'Metade do lado do quadrado')}${metric('Meios considerados',String(units.length))}</div><div class="formula-line" style="margin-top:18px">At = ${units.map(u=>f(u.result.area,6)).join(' + ')} = ${f(total.area,6)} MN²<br>R = √${f(total.area,6)} / 2 = ${f(total.radius,6)} MN</div><p class="result-warn">R é a metade do lado do quadrado e o raio do círculo nele inscrito; não representa a incerteza da deriva. A soma At não desconta sobreposições entre buscas.</p></div>`;
    $('search-result').hidden=false;$('search-dirty').textContent='';save();updateExport();
   }catch(error){$('search-error').textContent=error.message;$('search-dirty').textContent='';}
  }
- function exportReport(){
-  const lines=['MISSÃO LSAR — MEMÓRIA DE CÁLCULO','Título: '+($('mission-title')?.value.trim()||'Sem título'),'Unidades: nós, horas, milhas náuticas (MN) e MN². Direções verdadeiras.',''];
-  if(lastDrift){const {raw,condition,result:r}=lastDrift;lines.push('DERIVA',`Incidente: ${raw.incident}`,`Chegada: ${raw.arrival}`,`Tempo decorrido: ${r.time} h`,`Corrente: ${r.currentSpeed} nós para ${r.currentDirection}°V`,`Vento: ${r.windSpeed} nós, ${r.windDirection}°V, convenção ${raw.windConvention==='from'?'de onde sopra':'para onde sopra'}`,`Leeway ${raw.leewayMode==='auto'?'automático (estimativa digitalizada da foto, arredondada a 0,01 nó)':'manual'}: ${r.leeway} nós; ${condition}`,`Observação: ${raw.leewayNote||'não informada'}`,`Direção do leeway: ${r.leewayDirection}°V`,`Componente leste: ${r.east} nós; componente norte: ${r.north} nós`,`Intensidade resultante: ${r.speed} nós`,`Direção resultante: ${r.direction===null?'indeterminada (resultante zero)':r.direction+'°V'}`,`Distância derivada: ${r.distance} MN`,'');}
-  if(lastDrift?.result.datum){const d=lastDrift.result.datum;lines.push('POSIÇÃO INICIAL E DATUM ESTIMADO',`LKP: ${positionText(d.lkp)}`,`LKP em graus decimais: ${d.lkp.latitude}, ${d.lkp.longitude}`,`Horário do LKP usado: ${d.startTime}`,`Horário do DATUM: ${d.endTime}`,`Tempo LKP → DATUM: ${d.time} h`,`Distância LKP → DATUM: ${d.distance} MN`,`Direção: ${d.direction===null?'indeterminada (sem deriva)':d.direction+'°V'}`,`DATUM estimado: ${positionText(d)}`,`DATUM em graus decimais: ${d.latitude}, ${d.longitude}`,`DATUM em graus, minutos e segundos: ${positionText(d,'dms')}`,`Método: ${d.method}; corrente e leeway constantes; sem margens de incerteza.`,'');}
-  if(lastSearch){lines.push('PLANEJAMENTO DA BUSCA');lastSearch.units.forEach((u,i)=>{const r=u.result;lines.push(`${i+1}. ${u.name}`,u.source,`Wu = ${r.wu} MN; fw = ${r.fw}`,`Wc = Wu × fw = ${r.wc} MN`,r.spacingMode==='coverage'?`S calculado = Wc / C desejado (${r.desiredCoverage}) = ${r.spacing} MN`:'S informado pelo usuário',`S = ${r.spacing} MN; V = ${r.speed} nós; T de busca = ${r.time} h`,`C = Wc / S = ${r.coverage}`,`A${i+1} = S × V × T = ${r.area} MN²`,'');});const t=lastSearch.total;lines.push(`At = soma das áreas nominais = ${t.area} MN²`,`Lado do quadrado = √At = ${t.side} MN`,`R = √At / 2 = ${t.radius} MN (meia-largura do quadrado)`,'A soma não desconta sobreposições. R não representa incerteza da deriva.','');}
+ function reportText(title,drift,search){
+  const lines=['MISSÃO LSAR — MEMÓRIA DE CÁLCULO','Título: '+(title||'Sem título'),'Unidades: nós, horas, milhas náuticas (MN) e MN². Direções verdadeiras.',''];
+  if(drift){const {raw,condition,result:r}=drift;lines.push('DERIVA',`Incidente: ${raw.incident}`,`Chegada: ${raw.arrival}`,`Tempo decorrido: ${r.time} h`,`Corrente: ${r.currentSpeed} nós para ${r.currentDirection}°V`,`Vento: ${r.windSpeed} nós, ${r.windDirection}°V, convenção ${raw.windConvention==='from'?'de onde sopra':'para onde sopra'}`,`Leeway ${raw.leewayMode==='auto'?'automático (estimativa digitalizada da foto, arredondada a 0,01 nó)':'manual'}: ${r.leeway} nós; ${condition}`,`Observação: ${raw.leewayNote||'não informada'}`,`Direção do leeway: ${r.leewayDirection}°V`,`Componente leste: ${r.east} nós; componente norte: ${r.north} nós`,`Intensidade resultante: ${r.speed} nós`,`Direção resultante: ${r.direction===null?'indeterminada (resultante zero)':r.direction+'°V'}`,`Distância derivada: ${r.distance} MN`,'');}
+  if(drift?.result.datum){const d=drift.result.datum;lines.push('POSIÇÃO INICIAL E DATUM ESTIMADO',`LKP: ${positionText(d.lkp)}`,`LKP em graus decimais: ${d.lkp.latitude}, ${d.lkp.longitude}`,`Horário do LKP usado: ${d.startTime}`,`Horário do DATUM: ${d.endTime}`,`Tempo LKP → DATUM: ${d.time} h`,`Distância LKP → DATUM: ${d.distance} MN`,`Direção: ${d.direction===null?'indeterminada (sem deriva)':d.direction+'°V'}`,`DATUM estimado: ${positionText(d)}`,`DATUM em graus decimais: ${d.latitude}, ${d.longitude}`,`DATUM em graus, minutos e segundos: ${positionText(d,'dms')}`,`Método: ${d.method}; corrente e leeway constantes; sem margens de incerteza.`,'');}
+  if(search){lines.push('PLANEJAMENTO DA BUSCA');search.units.forEach((u,i)=>{const r=u.result;lines.push(`${i+1}. ${u.name}`,u.source,`Wu = ${r.wu} MN; fw = ${r.fw}`,`Wc = Wu × fw = ${r.wc} MN`,r.spacingMode==='coverage'?`S calculado = Wc / C desejado (${r.desiredCoverage}) = ${r.spacing} MN`:'S informado pelo usuário',`S = ${r.spacing} MN; V = ${r.speed} nós; T de busca = ${r.time} h`,`C = Wc / S = ${r.coverage}`,`A${i+1} = S × V × T = ${r.area} MN²`,'');});const t=search.total;lines.push(`At = soma das áreas nominais = ${t.area} MN²`,`Lado do quadrado = √At = ${t.side} MN`,`R = √At / 2 = ${t.radius} MN (meia-largura do quadrado)`,'A soma não desconta sobreposições. R não representa incerteza da deriva.','');}
   lines.push('Hipóteses: corrente e leeway constantes; leeway para onde o vento sopra; sem divergência angular ou estimativa da incerteza. Leeway automático: interpolação das retas digitalizadas da foto, de 0 a 32 nós, como estimativa. Modo manual disponível. As tabelas Wu e fw não são extrapoladas nem interpoladas.','Valores de Wu e fw: fotos fornecidas para estudo. Confira a adequação ao meio, objeto e condições.');
-  const blob=new Blob(['\ufeff'+lines.join('\n')],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='Memoria_Calculo_SAR.txt';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  return '\ufeff'+lines.join('\n');
  }
+ function downloadReport(title,drift,search){
+  if(!drift&&!search)throw Error('Calcule a deriva ou a área antes de exportar a memória.');
+  const blob=new Blob([reportText(title,drift,search)],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='Memoria_Calculo_SAR.txt';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+ }
+ function exportReport(){downloadReport($('mission-title')?.value.trim(),lastDrift,lastSearch);}
+
  const roseDialog=document.createElement('dialog');roseDialog.id='rose-dialog';roseDialog.className='rose-dialog';roseDialog.setAttribute('aria-labelledby','rose-title');
  roseDialog.innerHTML=`<div class="rose-dialog-header"><div><p class="eyebrow">Deriva · visualização ampliada</p><h2 id="rose-title">Rosa de manobra</h2></div><button type="button" id="rose-close" class="btn secondary" autofocus>Fechar</button></div><div class="rose-dialog-grid"><div><label class="rose-zoom-control">Ampliação <input id="rose-zoom" type="range" min="100" max="200" step="25" value="100"><output id="rose-zoom-value" for="rose-zoom">100%</output></label><p class="helper">Graduação de 1°, números a cada 10°. Aumente a ampliação e deslize o gráfico para consultar os detalhes.</p><div class="rose-viewport" tabindex="0" role="region" aria-label="Rosa ampliada; use a rolagem para explorar quando houver zoom"><div id="rose-graphic"></div></div><div class="vector-legend"><span><i style="background:#296da5"></i>Corrente</span><span><i style="background:#d28a20"></i>Leeway</span><span><i style="background:#087970"></i>Resultante</span></div></div><div id="rose-details"></div></div>`;
  document.body.appendChild(roseDialog);
@@ -221,6 +238,8 @@
  $('export-report').onclick=exportReport;
  $('clear-calculator').onclick=()=>{if(!window.confirm('Iniciar novo cálculo e limpar o rascunho atual? Suas missões salvas e os simulados serão mantidos.'))return;$('drift-form').reset();syncLeeway();updateCoordinateHelp();syncCoordinatePreview();$('units').replaceChildren();addUnit();lastDrift=null;lastSearch=null;$('drift-result').hidden=true;$('search-result').hidden=true;['drift-error','search-error','drift-dirty','search-dirty'].forEach(id=>$(id).textContent='');updateExport();save();document.dispatchEvent(new Event('lsar:calculator-cleared'));};
  window.SARCalculatorSession=Object.freeze({
+  evaluate,
+  exportReport(data,title){const result=evaluate(data);downloadReport(title,result.drift,result.search);},
   capture(){return {version:1,drift:rawDrift(),units:rawUnits(),calculated:{drift:!!lastDrift,search:!!lastSearch}};},
   restore(data){
    if(!data||data.version!==1||!data.drift||!Array.isArray(data.units)||!data.units.length||data.units.length>30)throw Error('Dados da missão inválidos.');

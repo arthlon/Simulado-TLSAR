@@ -53,6 +53,14 @@
    const description=document.createElement('div'),title=document.createElement('h3'),info=document.createElement('p');title.textContent=item.title;info.className='helper';info.textContent=new Date(item.updatedAt).toLocaleString('pt-BR')+' · '+item.data.units.length+' meio(s)'+(item.id===currentId?' · aberta':'');description.append(title,info);
    const actions=document.createElement('div');actions.className='mission-buttons';
    for(const [action,label]of [['open','Abrir'],['delete','Excluir']]){const button=document.createElement('button');button.type='button';button.className=action==='open'?'btn secondary':'link-btn';button.dataset.missionAction=action;button.dataset.missionId=item.id;button.textContent=label;button.setAttribute('aria-label',label+' missão '+item.title);actions.append(button);}
+   const exportMenu=document.createElement('details');exportMenu.className='mission-export';
+   const summary=document.createElement('summary');summary.className='link-btn';summary.textContent='Exportar dados';summary.setAttribute('aria-label','Exportar dados da missão '+item.title);
+   const formats=document.createElement('div');formats.className='mission-export-options';
+   for(const [format,label]of [['pdf','Resumo PDF'],['txt','Memória (.txt)']]){
+    const button=document.createElement('button'),availability=window.SARExports?.availability(item,format)||{available:false,message:'Recarregue a página para carregar a exportação.'};
+    button.type='button';button.className='btn secondary';button.textContent=label;button.dataset.missionAction='export';button.dataset.missionId=item.id;button.dataset.exportFormat=format;button.disabled=!availability.available;button.title=availability.message;button.setAttribute('aria-label',label+' da missão '+item.title);formats.append(button);
+   }
+   exportMenu.append(summary,formats);actions.insertBefore(exportMenu,actions.lastElementChild);
    article.append(description,actions);list.append(article);
   }
  }
@@ -74,6 +82,7 @@
   const button=e.target.closest('[data-mission-action]');if(!button)return;
   try{
    const items=read(),item=items.find(m=>m.id===button.dataset.missionId);if(!item){render();return;}
+   if(button.dataset.missionAction==='export'){window.SARExports.mission(item,button.dataset.exportFormat);message('Arquivo exportado da missão salva: '+item.title+'.');return;}
    if(button.dataset.missionAction==='delete'){
     if(!confirm('Excluir a missão “'+item.title+'”? O cálculo aberto continuará como rascunho.'))return;
     write(items.filter(m=>m.id!==item.id));if(currentId===item.id){currentId=null;loadedVersion=null;working();}render();message('Missão excluída. O rascunho atual foi mantido.');return;
