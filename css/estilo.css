@@ -8,3 +8,6 @@
 @media(max-width:650px){.brand .lsar-logo{width:70px;height:54px}.update-notice{left:16px;right:16px;bottom:16px;font-size:13px}.brand strong{font-size:15px}.brand small{font-size:11px}}
 @media(max-width:360px){header{padding-left:14px;padding-right:14px}.brand{gap:9px}.brand .lsar-logo{width:62px;height:50px}}
 @media print{.update-notice{display:none!important}}
+
+/* Preserve the two columns and statement lists in exam-review prompts. */
+#question-title{white-space:pre-line}

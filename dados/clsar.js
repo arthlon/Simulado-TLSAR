@@ -4780,6 +4780,963 @@ window.SAR_COURSES.clsar = {
       ],
       "answer": 3,
       "explanation": "O avanço do navio precisa estar compatível com a aeronave e com as dimensões da busca coordenada."
+    },
+    {
+      "id": "c336",
+      "topic": 0,
+      "page": "10-11",
+      "question": "Correlacione as duas colunas.\n\n1. SC\n2. SMC\n3. OSC\n4. ACO\n\nA. Coordena as operações na área do incidente SAR.\nB. Coordena o planejamento dos serviços SAR.\nC. Coordena duas ou mais aeronaves simultâneas.\nD. Coordena uma situação real ou aparente de perigo.\n\nQual sequência de números corresponde a A, B, C, D?",
+      "options": [
+        "3 – 1 – 4 – 2",
+        "2 – 4 – 3 – 1",
+        "3 – 2 – 4 – 1",
+        "2 – 1 – 3 – 4"
+      ],
+      "answer": 0,
+      "explanation": "A → 3 (OSC): Coordena as operações na área do incidente SAR.. B → 1 (SC): Coordena o planejamento dos serviços SAR.. C → 4 (ACO): Coordena duas ou mais aeronaves simultâneas.. D → 2 (SMC): Coordena uma situação real ou aparente de perigo..",
+      "format": "matching",
+      "associations": [
+        3,
+        1,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "c337",
+      "topic": 0,
+      "page": "10-11",
+      "question": "Correlacione as duas colunas.\n\n1. Coordenador SAR\n2. Coordenador de Missão SAR\n3. Coordenador na Cena de Ação\n4. Coordenador de Aeronaves\n\nA. SMC\nB. ACO\nC. SC\nD. OSC\n\nQual sequência de números corresponde a A, B, C, D?",
+      "options": [
+        "3 – 1 – 2 – 4",
+        "2 – 4 – 1 – 3",
+        "3 – 2 – 4 – 1",
+        "2 – 1 – 4 – 3"
+      ],
+      "answer": 1,
+      "explanation": "A → 2 (Coordenador de Missão SAR): SMC. B → 4 (Coordenador de Aeronaves): ACO. C → 1 (Coordenador SAR): SC. D → 3 (Coordenador na Cena de Ação): OSC.",
+      "format": "matching",
+      "associations": [
+        2,
+        4,
+        1,
+        3
+      ]
+    },
+    {
+      "id": "c338",
+      "topic": 0,
+      "page": "10-11",
+      "question": "Julgue as afirmações: V para verdadeiro e F para falso.\n\n1. O SC coordena o planejamento dos serviços SAR.\n2. O OSC coordena o emprego simultâneo de aeronaves na função de ACO.\n3. O SMC é designado para coordenar uma situação real ou aparente de perigo.\n4. O ACO é o nome do coordenador dos serviços SAR em caráter geral.\n\nQual é a sequência correta?",
+      "options": [
+        "V – V – V – V",
+        "F – V – V – V",
+        "V – F – V – F",
+        "F – F – F – F"
+      ],
+      "answer": 2,
+      "explanation": "1: V. Essa é a função do Coordenador SAR. 2: F. O OSC coordena na cena; o ACO é o coordenador de aeronaves. 3: V. A aula descreve essa designação temporária para a missão. 4: F. A função de ACO é a coordenação de aeronaves; SC trata dos serviços.",
+      "format": "vf",
+      "statements": [
+        {
+          "text": "O SC coordena o planejamento dos serviços SAR.",
+          "truth": true
+        },
+        {
+          "text": "O OSC coordena o emprego simultâneo de aeronaves na função de ACO.",
+          "truth": false
+        },
+        {
+          "text": "O SMC é designado para coordenar uma situação real ou aparente de perigo.",
+          "truth": true
+        },
+        {
+          "text": "O ACO é o nome do coordenador dos serviços SAR em caráter geral.",
+          "truth": false
+        }
+      ]
+    },
+    {
+      "id": "c339",
+      "topic": 4,
+      "page": "7,9",
+      "question": "Julgue as afirmações: V para verdadeiro e F para falso.\n\n1. O Brasil adota a região B do sistema IALA.\n2. No sentido de entrada vindo do mar, os sinais encarnados ficam a bombordo.\n3. Na saída para o mar, os sinais verdes ficam a boreste.\n4. Na saída para o mar, os sinais encarnados ficam a bombordo.\n\nQual é a sequência correta?",
+      "options": [
+        "F – F – F – V",
+        "V – F – V – F",
+        "F – F – V – F",
+        "V – F – V – V"
+      ],
+      "answer": 3,
+      "explanation": "1: V. O material identifica o Brasil com o IALA B. 2: F. Na entrada do IALA B, os encarnados ficam a boreste. 3: V. A saída inverte os bordos usados na entrada. 4: V. Essa é a disposição indicada para a saída no IALA B.",
+      "format": "vf",
+      "statements": [
+        {
+          "text": "O Brasil adota a região B do sistema IALA.",
+          "truth": true
+        },
+        {
+          "text": "No sentido de entrada vindo do mar, os sinais encarnados ficam a bombordo.",
+          "truth": false
+        },
+        {
+          "text": "Na saída para o mar, os sinais verdes ficam a boreste.",
+          "truth": true
+        },
+        {
+          "text": "Na saída para o mar, os sinais encarnados ficam a bombordo.",
+          "truth": true
+        }
+      ]
+    },
+    {
+      "id": "c340",
+      "topic": 4,
+      "page": "11-14",
+      "question": "Julgue as afirmações: V para verdadeiro e F para falso.\n\n1. No IALA B, o sinal lateral de bombordo na entrada é verde.\n2. O tope do sinal lateral de boreste é um cilindro verde.\n3. Lampejos compostos (2+1) distinguem canal preferencial.\n4. Canal preferencial a boreste usa sinal predominantemente encarnado, com faixa verde.\n\nQual é a sequência correta?",
+      "options": [
+        "V – F – V – F",
+        "F – F – V – V",
+        "V – F – F – V",
+        "V – F – F – F"
+      ],
+      "answer": 0,
+      "explanation": "1: V. O verde identifica o sinal lateral de bombordo na entrada. 2: F. O tope de boreste é um cone encarnado com vértice para cima. 3: V. O grupo composto é usado nos sinais laterais modificados. 4: F. No IALA B ele é predominantemente verde, com faixa horizontal encarnada.",
+      "format": "vf",
+      "statements": [
+        {
+          "text": "No IALA B, o sinal lateral de bombordo na entrada é verde.",
+          "truth": true
+        },
+        {
+          "text": "O tope do sinal lateral de boreste é um cilindro verde.",
+          "truth": false
+        },
+        {
+          "text": "Lampejos compostos (2+1) distinguem canal preferencial.",
+          "truth": true
+        },
+        {
+          "text": "Canal preferencial a boreste usa sinal predominantemente encarnado, com faixa verde.",
+          "truth": false
+        }
+      ]
+    },
+    {
+      "id": "c341",
+      "topic": 4,
+      "page": "9,11-12",
+      "question": "Julgue as afirmações: V para verdadeiro e F para falso.\n\n1. Na entrada do IALA B, uma luz verde lateral deve ficar a boreste.\n2. O sinal lateral de boreste pode ter cone encarnado no tope.\n3. O sinal lateral de bombordo pode ter cilindro verde no tope.\n4. A lateralidade dos sinais permanece a mesma tanto entrando quanto saindo do porto.\n\nQual é a sequência correta?",
+      "options": [
+        "V – F – V – F",
+        "F – V – V – F",
+        "V – V – V – V",
+        "V – V – V – F"
+      ],
+      "answer": 1,
+      "explanation": "1: F. O sinal verde lateral fica a bombordo na entrada. 2: V. O cone tem o vértice voltado para cima. 3: V. O cilindro verde é a marca de tope apresentada. 4: F. O bordo de passagem se inverte ao mudar da entrada para a saída.",
+      "format": "vf",
+      "statements": [
+        {
+          "text": "Na entrada do IALA B, uma luz verde lateral deve ficar a boreste.",
+          "truth": false
+        },
+        {
+          "text": "O sinal lateral de boreste pode ter cone encarnado no tope.",
+          "truth": true
+        },
+        {
+          "text": "O sinal lateral de bombordo pode ter cilindro verde no tope.",
+          "truth": true
+        },
+        {
+          "text": "A lateralidade dos sinais permanece a mesma tanto entrando quanto saindo do porto.",
+          "truth": false
+        }
+      ]
+    },
+    {
+      "id": "c342",
+      "topic": 5,
+      "page": "7,11",
+      "question": "Julgue as afirmações: V para verdadeiro e F para falso.\n\n1. Marcação quase constante e distância diminuindo indicam risco de colisão.\n2. Na dúvida sobre o risco de colisão, deve-se considerar que ele não existe.\n3. A manobra de evasão deve ser antecipada e substancial.\n4. Uma manobra pode envolver alteração de rumo e/ou velocidade.\n\nQual é a sequência correta?",
+      "options": [
+        "V – F – F – F",
+        "V – V – F – F",
+        "V – F – V – V",
+        "F – V – F – F"
+      ],
+      "answer": 2,
+      "explanation": "1: V. A Regra 7 manda presumir o risco nessa situação. 2: F. Na dúvida, considera-se que o risco existe. 3: V. A Regra 8 exige ação positiva, ampla e perceptível. 4: V. Essas alterações são previstas conforme a situação.",
+      "format": "vf",
+      "statements": [
+        {
+          "text": "Marcação quase constante e distância diminuindo indicam risco de colisão.",
+          "truth": true
+        },
+        {
+          "text": "Na dúvida sobre o risco de colisão, deve-se considerar que ele não existe.",
+          "truth": false
+        },
+        {
+          "text": "A manobra de evasão deve ser antecipada e substancial.",
+          "truth": true
+        },
+        {
+          "text": "Uma manobra pode envolver alteração de rumo e/ou velocidade.",
+          "truth": true
+        }
+      ]
+    },
+    {
+      "id": "c343",
+      "topic": 5,
+      "page": "13-16",
+      "question": "Julgue as afirmações: V para verdadeiro e F para falso.\n\n1. Quem ultrapassa deve manter-se fora do caminho da embarcação ultrapassada.\n2. Uma embarcação de menos de 20 m pode impedir um navio que só navegue dentro do canal.\n3. Em canal estreito, deve-se navegar junto ao limite exterior de bombordo sempre que seguro.\n4. Havendo dúvida sobre estar ultrapassando, deve-se agir como alcançadora.\n\nQual é a sequência correta?",
+      "options": [
+        "V – F – V – V",
+        "V – V – F – V",
+        "F – V – F – V",
+        "V – F – F – V"
+      ],
+      "answer": 3,
+      "explanation": "1: V. Essa é a obrigação da embarcação alcançadora. 2: F. A Regra 9 exige não impedir a passagem do navio restrito ao canal. 3: F. A orientação é o limite exterior de boreste. 4: V. A dúvida não afasta a obrigação de quem ultrapassa.",
+      "format": "vf",
+      "statements": [
+        {
+          "text": "Quem ultrapassa deve manter-se fora do caminho da embarcação ultrapassada.",
+          "truth": true
+        },
+        {
+          "text": "Uma embarcação de menos de 20 m pode impedir um navio que só navegue dentro do canal.",
+          "truth": false
+        },
+        {
+          "text": "Em canal estreito, deve-se navegar junto ao limite exterior de bombordo sempre que seguro.",
+          "truth": false
+        },
+        {
+          "text": "Havendo dúvida sobre estar ultrapassando, deve-se agir como alcançadora.",
+          "truth": true
+        }
+      ]
+    },
+    {
+      "id": "c344",
+      "topic": 5,
+      "page": "18,20,23",
+      "question": "Julgue as afirmações: V para verdadeiro e F para falso.\n\n1. Em roda a roda entre duas embarcações de propulsão mecânica com risco, ambas guinam a boreste.\n2. Em rumos cruzados à vista, quem vê a outra por boreste deve manter rumo por ter preferência.\n3. A embarcação obrigada a manobrar deve fazê-lo cedo e substancialmente.\n4. Em roda a roda, a passagem resultante prevista é boreste com boreste.\n\nQual é a sequência correta?",
+      "options": [
+        "V – F – V – F",
+        "F – F – F – V",
+        "F – F – F – F",
+        "V – F – F – F"
+      ],
+      "answer": 0,
+      "explanation": "1: V. A Regra 14 prevê a guinada de ambas para BE. 2: F. Essa embarcação é a obrigada a manobrar na situação da Regra 15. 3: V. A Regra 16 visa manter uma distância safa. 4: F. A passagem prevista é bombordo com bombordo.",
+      "format": "vf",
+      "statements": [
+        {
+          "text": "Em roda a roda entre duas embarcações de propulsão mecânica com risco, ambas guinam a boreste.",
+          "truth": true
+        },
+        {
+          "text": "Em rumos cruzados à vista, quem vê a outra por boreste deve manter rumo por ter preferência.",
+          "truth": false
+        },
+        {
+          "text": "A embarcação obrigada a manobrar deve fazê-lo cedo e substancialmente.",
+          "truth": true
+        },
+        {
+          "text": "Em roda a roda, a passagem resultante prevista é boreste com boreste.",
+          "truth": false
+        }
+      ]
+    },
+    {
+      "id": "c345",
+      "topic": 5,
+      "page": "18",
+      "question": "Julgue as afirmações: V para verdadeiro e F para falso.\n\n1. A Regra 14 apresentada trata de rumos opostos ou quase opostos com risco de colisão.\n2. Em roda a roda, somente a embarcação de menor porte deve guinar.\n3. A manobra prevista de ambas as embarcações é para boreste.\n4. O resultado previsto é a passagem por bombordo uma da outra.\n\nQual é a sequência correta?",
+      "options": [
+        "V – F – V – F",
+        "V – F – V – V",
+        "V – F – F – V",
+        "F – V – V – V"
+      ],
+      "answer": 1,
+      "explanation": "1: V. São as condições da situação de roda a roda descrita. 2: F. Ambas as embarcações de propulsão mecânica devem guinar para boreste. 3: V. Esse é o bordo da alteração de rumo. 4: V. Guinadas a BE permitem passagem BB com BB.",
+      "format": "vf",
+      "statements": [
+        {
+          "text": "A Regra 14 apresentada trata de rumos opostos ou quase opostos com risco de colisão.",
+          "truth": true
+        },
+        {
+          "text": "Em roda a roda, somente a embarcação de menor porte deve guinar.",
+          "truth": false
+        },
+        {
+          "text": "A manobra prevista de ambas as embarcações é para boreste.",
+          "truth": true
+        },
+        {
+          "text": "O resultado previsto é a passagem por bombordo uma da outra.",
+          "truth": true
+        }
+      ]
+    },
+    {
+      "id": "c346",
+      "topic": 7,
+      "page": "10,19-20",
+      "question": "Julgue as afirmações: V para verdadeiro e F para falso.\n\n1. A Carta 12.000 auxilia a interpretar símbolos e abreviaturas das cartas náuticas.\n2. O Roteiro é apenas outro nome da Carta 12.000.\n3. O Roteiro pode informar perigos, fundeadouros e recursos dos portos.\n4. O volume Costa Leste indicado vai de Cabo Frio ao Arroio Chuí.\n\nQual é a sequência correta?",
+      "options": [
+        "F – F – V – F",
+        "V – F – F – V",
+        "V – F – V – F",
+        "V – V – F – V"
+      ],
+      "answer": 2,
+      "explanation": "1: V. Essa é a finalidade da INT 1 descrita na aula. 2: F. São publicações distintas: o Roteiro descreve costas, portos e outros dados de navegação. 3: V. Esses conteúdos aparecem na descrição da publicação. 4: F. Esse trecho é Costa Sul; Costa Leste vai de Calcanhar a Cabo Frio.",
+      "format": "vf",
+      "statements": [
+        {
+          "text": "A Carta 12.000 auxilia a interpretar símbolos e abreviaturas das cartas náuticas.",
+          "truth": true
+        },
+        {
+          "text": "O Roteiro é apenas outro nome da Carta 12.000.",
+          "truth": false
+        },
+        {
+          "text": "O Roteiro pode informar perigos, fundeadouros e recursos dos portos.",
+          "truth": true
+        },
+        {
+          "text": "O volume Costa Leste indicado vai de Cabo Frio ao Arroio Chuí.",
+          "truth": false
+        }
+      ]
+    },
+    {
+      "id": "c347",
+      "topic": 7,
+      "page": "10,19-20,22",
+      "question": "Julgue as afirmações: V para verdadeiro e F para falso.\n\n1. Informações sobre demanda de portos e descrição da costa são próprias do Roteiro.\n2. Para esclarecer um símbolo da carta, a publicação específica é a Carta 12.000.\n3. A Carta 12.000 substitui as NPCP nos limites locais de calado e velocidade.\n4. A Costa Leste do Roteiro cobre o trecho de Calcanhar a Cabo Frio.\n\nQual é a sequência correta?",
+      "options": [
+        "V – V – V – F",
+        "F – F – F – F",
+        "V – F – F – F",
+        "V – V – F – V"
+      ],
+      "answer": 3,
+      "explanation": "1: V. O Roteiro contém essas descrições para o navegante. 2: V. Ela reúne símbolos, abreviaturas e termos cartográficos. 3: F. As regras locais da jurisdição são tratadas nas NPCP. 4: V. Esses são os limites apresentados no material.",
+      "format": "vf",
+      "statements": [
+        {
+          "text": "Informações sobre demanda de portos e descrição da costa são próprias do Roteiro.",
+          "truth": true
+        },
+        {
+          "text": "Para esclarecer um símbolo da carta, a publicação específica é a Carta 12.000.",
+          "truth": true
+        },
+        {
+          "text": "A Carta 12.000 substitui as NPCP nos limites locais de calado e velocidade.",
+          "truth": false
+        },
+        {
+          "text": "A Costa Leste do Roteiro cobre o trecho de Calcanhar a Cabo Frio.",
+          "truth": true
+        }
+      ]
+    },
+    {
+      "id": "c348",
+      "topic": 7,
+      "page": "7,10,19,24",
+      "question": "Correlacione as duas colunas.\n\n1. Catálogo de Cartas e Publicações\n2. Carta 12.000\n3. Roteiro\n4. Lista de Auxílios-Rádio\n\nA. Explica símbolos e abreviaturas das cartas.\nB. Descreve costa, demanda de portos e perigos.\nC. Relaciona cartas, índices e publicações da DHN.\nD. Reúne serviços-rádio de auxílio à navegação.\n\nQual sequência de números corresponde a A, B, C, D?",
+      "options": [
+        "2 – 3 – 1 – 4",
+        "4 – 2 – 3 – 1",
+        "3 – 1 – 4 – 2",
+        "1 – 3 – 2 – 4"
+      ],
+      "answer": 0,
+      "explanation": "A → 2 (Carta 12.000): Explica símbolos e abreviaturas das cartas.. B → 3 (Roteiro): Descreve costa, demanda de portos e perigos.. C → 1 (Catálogo de Cartas e Publicações): Relaciona cartas, índices e publicações da DHN.. D → 4 (Lista de Auxílios-Rádio): Reúne serviços-rádio de auxílio à navegação..",
+      "format": "matching",
+      "associations": [
+        2,
+        3,
+        1,
+        4
+      ]
+    },
+    {
+      "id": "c349",
+      "topic": 9,
+      "page": "7-8",
+      "question": "Julgue as afirmações: V para verdadeiro e F para falso.\n\n1. Portos, canais e proximidades de perigos podem exigir navegação em águas restritas.\n2. O calado é irrelevante para a navegação em águas restritas.\n3. A aula associa distância menor que 3 MN da costa ou perigo às águas restritas.\n4. Oceânica, costeira e águas restritas são métodos de obtenção da posição.\n\nQual é a sequência correta?",
+      "options": [
+        "V – V – V – F",
+        "V – F – V – F",
+        "V – F – V – V",
+        "F – V – F – F"
+      ],
+      "answer": 1,
+      "explanation": "1: V. São situações que limitam a liberdade de manobra. 2: F. A aula destaca o calado entre as características a considerar. 3: V. Esse é um dos critérios didáticos apresentados. 4: F. São tipos de navegação; visual, astronômica, eletrônica e estimada são métodos.",
+      "format": "vf",
+      "statements": [
+        {
+          "text": "Portos, canais e proximidades de perigos podem exigir navegação em águas restritas.",
+          "truth": true
+        },
+        {
+          "text": "O calado é irrelevante para a navegação em águas restritas.",
+          "truth": false
+        },
+        {
+          "text": "A aula associa distância menor que 3 MN da costa ou perigo às águas restritas.",
+          "truth": true
+        },
+        {
+          "text": "Oceânica, costeira e águas restritas são métodos de obtenção da posição.",
+          "truth": false
+        }
+      ]
+    },
+    {
+      "id": "c350",
+      "topic": 9,
+      "page": "8-10",
+      "question": "Julgue as afirmações: V para verdadeiro e F para falso.\n\n1. A 10 MN da costa e em 80 m de profundidade, sem perigos próximos, o exemplo se enquadra como costeiro.\n2. A 60 MN da costa e em 500 m, sem perigos próximos, a navegação é em águas restritas.\n3. Navegação visual é um tipo definido apenas pela distância da costa.\n4. Navegação em águas restritas exige maior precisão.\n\nQual é a sequência correta?",
+      "options": [
+        "F – V – V – F",
+        "V – V – F – V",
+        "V – F – F – V",
+        "V – V – V – F"
+      ],
+      "answer": 2,
+      "explanation": "1: V. O caso está dentro dos limites costeiros apresentados na aula. 2: F. O caso descrito se enquadra como oceânico. 3: F. Visual é um método baseado em observações de referências. 4: V. A proximidade dos perigos exige controle mais preciso.",
+      "format": "vf",
+      "statements": [
+        {
+          "text": "A 10 MN da costa e em 80 m de profundidade, sem perigos próximos, o exemplo se enquadra como costeiro.",
+          "truth": true
+        },
+        {
+          "text": "A 60 MN da costa e em 500 m, sem perigos próximos, a navegação é em águas restritas.",
+          "truth": false
+        },
+        {
+          "text": "Navegação visual é um tipo definido apenas pela distância da costa.",
+          "truth": false
+        },
+        {
+          "text": "Navegação em águas restritas exige maior precisão.",
+          "truth": true
+        }
+      ]
+    },
+    {
+      "id": "c351",
+      "topic": 9,
+      "page": "7-8",
+      "question": "Correlacione as duas colunas.\n\n1. Águas restritas\n2. Costeira\n3. Oceânica\n\nA. A 60 MN da costa e em 500 m, sem perigos próximos.\nB. Em canal com perigos que limitam a manobra.\nC. A 10 MN da costa e em 80 m, sem perigos próximos.\n\nQual sequência de números corresponde a A, B, C?",
+      "options": [
+        "2 – 1 – 3",
+        "1 – 3 – 2",
+        "2 – 3 – 1",
+        "3 – 1 – 2"
+      ],
+      "answer": 3,
+      "explanation": "A → 3 (Oceânica): A 60 MN da costa e em 500 m, sem perigos próximos.. B → 1 (Águas restritas): Em canal com perigos que limitam a manobra.. C → 2 (Costeira): A 10 MN da costa e em 80 m, sem perigos próximos..",
+      "format": "matching",
+      "associations": [
+        3,
+        1,
+        2
+      ]
+    },
+    {
+      "id": "c352",
+      "topic": 9,
+      "page": "9-10",
+      "question": "Julgue as afirmações: V para verdadeiro e F para falso.\n\n1. A navegação visual usa pontos em terra e auxílios representados na carta.\n2. A navegação astronômica determina a posição exclusivamente pelo radar.\n3. Radar e GNSS são exemplos da navegação eletrônica.\n4. Na navegação estimada, o intervalo de tempo não participa do cálculo da posição futura.\n\nQual é a sequência correta?",
+      "options": [
+        "V – F – V – F",
+        "F – F – F – F",
+        "V – V – F – F",
+        "V – V – V – V"
+      ],
+      "answer": 0,
+      "explanation": "1: V. São as referências observadas no método visual. 2: F. Ela usa observações dos astros. 3: V. São equipamentos eletrônicos usados para obter posição. 4: F. O tempo integra a estimativa, juntamente com rumo e velocidade.",
+      "format": "vf",
+      "statements": [
+        {
+          "text": "A navegação visual usa pontos em terra e auxílios representados na carta.",
+          "truth": true
+        },
+        {
+          "text": "A navegação astronômica determina a posição exclusivamente pelo radar.",
+          "truth": false
+        },
+        {
+          "text": "Radar e GNSS são exemplos da navegação eletrônica.",
+          "truth": true
+        },
+        {
+          "text": "Na navegação estimada, o intervalo de tempo não participa do cálculo da posição futura.",
+          "truth": false
+        }
+      ]
+    },
+    {
+      "id": "c353",
+      "topic": 9,
+      "page": "9-10",
+      "question": "Julgue as afirmações: V para verdadeiro e F para falso.\n\n1. Observações dos astros são empregadas no método astronômico.\n2. A estimada parte de uma posição conhecida e considera os dados de movimento.\n3. Cada tipo de navegação só pode empregar um método, sem combinação.\n4. A posição obtida por GNSS caracteriza navegação visual.\n\nQual é a sequência correta?",
+      "options": [
+        "F – V – F – V",
+        "V – V – F – F",
+        "F – V – V – V",
+        "V – F – V – F"
+      ],
+      "answer": 1,
+      "explanation": "1: V. O método é definido pela obtenção de posição com astros. 2: V. Inclui rumo, velocidade, tempo e corrente, se conhecida. 3: F. A aula admite usar um ou mais métodos conforme a necessidade. 4: F. GNSS é um recurso de navegação eletrônica.",
+      "format": "vf",
+      "statements": [
+        {
+          "text": "Observações dos astros são empregadas no método astronômico.",
+          "truth": true
+        },
+        {
+          "text": "A estimada parte de uma posição conhecida e considera os dados de movimento.",
+          "truth": true
+        },
+        {
+          "text": "Cada tipo de navegação só pode empregar um método, sem combinação.",
+          "truth": false
+        },
+        {
+          "text": "A posição obtida por GNSS caracteriza navegação visual.",
+          "truth": false
+        }
+      ]
+    },
+    {
+      "id": "c354",
+      "topic": 9,
+      "page": "9-10",
+      "question": "Correlacione as duas colunas.\n\n1. Visual\n2. Astronômica\n3. Eletrônica\n4. Estimada\n\nA. Previsão a partir de posição, rumo, velocidade e tempo.\nB. Referências em terra e auxílios observados.\nC. Posição obtida por radar ou GNSS.\nD. Observações dos astros.\n\nQual sequência de números corresponde a A, B, C, D?",
+      "options": [
+        "1 – 4 – 2 – 3",
+        "4 – 3 – 2 – 1",
+        "4 – 1 – 3 – 2",
+        "2 – 3 – 4 – 1"
+      ],
+      "answer": 2,
+      "explanation": "A → 4 (Estimada): Previsão a partir de posição, rumo, velocidade e tempo.. B → 1 (Visual): Referências em terra e auxílios observados.. C → 3 (Eletrônica): Posição obtida por radar ou GNSS.. D → 2 (Astronômica): Observações dos astros..",
+      "format": "matching",
+      "associations": [
+        4,
+        1,
+        3,
+        2
+      ]
+    },
+    {
+      "id": "c355",
+      "topic": 10,
+      "page": "7-8",
+      "question": "Julgue as afirmações: V para verdadeiro e F para falso.\n\n1. A entrada e saída de porto exige preparação e briefing de navegação.\n2. Os pontos para navegação visual devem ser selecionados previamente.\n3. O ferro deve permanecer indisponível até ocorrer uma emergência.\n4. A corrente só precisa ser considerada se houver falha do radar.\n\nQual é a sequência correta?",
+      "options": [
+        "V – V – V – F",
+        "V – F – V – F",
+        "F – V – F – V",
+        "V – V – F – F"
+      ],
+      "answer": 3,
+      "explanation": "1: V. O briefing está entre os preparativos indicados. 2: V. A seleção prévia evita improvisar referências na manobra. 3: F. Ele deve ficar pronto para largar. 4: F. A corrente deve ser avaliada e compensada quando produzir efeitos na derrota.",
+      "format": "vf",
+      "statements": [
+        {
+          "text": "A entrada e saída de porto exige preparação e briefing de navegação.",
+          "truth": true
+        },
+        {
+          "text": "Os pontos para navegação visual devem ser selecionados previamente.",
+          "truth": true
+        },
+        {
+          "text": "O ferro deve permanecer indisponível até ocorrer uma emergência.",
+          "truth": false
+        },
+        {
+          "text": "A corrente só precisa ser considerada se houver falha do radar.",
+          "truth": false
+        }
+      ]
+    },
+    {
+      "id": "c356",
+      "topic": 10,
+      "page": "9-10",
+      "question": "Julgue as afirmações: V para verdadeiro e F para falso.\n\n1. Após uma guinada, deve-se obter nova posição assim que estabilizar no novo rumo.\n2. Em uma guinada, basta conferir o bordo para o qual o navio está girando.\n3. Persistindo dúvida sobre a derrota, a orientação da aula é parar máquinas.\n4. No canal dragado, a aula recomenda uma derrota à esquerda do centro, como regra geral.\n\nQual é a sequência correta?",
+      "options": [
+        "V – F – V – F",
+        "V – V – V – F",
+        "V – F – F – F",
+        "F – F – V – F"
+      ],
+      "answer": 0,
+      "explanation": "1: V. A aula recomenda conferir a posição após estabilizar. 2: F. É necessário verificar se ambos os bordos estão safos. 3: V. Primeiro deve-se tentar sanar a dúvida; se persistir, parar máquinas. 4: F. A recomendação é à direita do centro, respeitadas as regras de tráfego.",
+      "format": "vf",
+      "statements": [
+        {
+          "text": "Após uma guinada, deve-se obter nova posição assim que estabilizar no novo rumo.",
+          "truth": true
+        },
+        {
+          "text": "Em uma guinada, basta conferir o bordo para o qual o navio está girando.",
+          "truth": false
+        },
+        {
+          "text": "Persistindo dúvida sobre a derrota, a orientação da aula é parar máquinas.",
+          "truth": true
+        },
+        {
+          "text": "No canal dragado, a aula recomenda uma derrota à esquerda do centro, como regra geral.",
+          "truth": false
+        }
+      ]
+    },
+    {
+      "id": "c357",
+      "topic": 8,
+      "page": "5-6",
+      "question": "Julgue as afirmações: V para verdadeiro e F para falso.\n\n1. O planejamento utiliza cartas de escalas adequadas às diferentes etapas da derrota.\n2. Roteiros, Lista de Faróis e Lista de Auxílios-Rádio são documentos citados no planejamento.\n3. Tábuas das Marés e Cartas de Correntes de Maré não têm aplicação no planejamento.\n4. Os Avisos aos Navegantes devem ser desconsiderados se houver carta náutica a bordo.\n\nQual é a sequência correta?",
+      "options": [
+        "V – F – V – F",
+        "V – V – F – F",
+        "V – F – F – V",
+        "V – V – V – V"
+      ],
+      "answer": 1,
+      "explanation": "1: V. A aula cita desde cartas gerais até as de pequenos trechos e aproximações. 2: V. Todos aparecem na relação de documentos de apoio. 3: F. Ambas são relacionadas entre os documentos usados. 4: F. Eles fornecem informações de atualização das cartas e publicações.",
+      "format": "vf",
+      "statements": [
+        {
+          "text": "O planejamento utiliza cartas de escalas adequadas às diferentes etapas da derrota.",
+          "truth": true
+        },
+        {
+          "text": "Roteiros, Lista de Faróis e Lista de Auxílios-Rádio são documentos citados no planejamento.",
+          "truth": true
+        },
+        {
+          "text": "Tábuas das Marés e Cartas de Correntes de Maré não têm aplicação no planejamento.",
+          "truth": false
+        },
+        {
+          "text": "Os Avisos aos Navegantes devem ser desconsiderados se houver carta náutica a bordo.",
+          "truth": false
+        }
+      ]
+    },
+    {
+      "id": "c358",
+      "topic": 8,
+      "page": "7-8",
+      "question": "Julgue as afirmações: V para verdadeiro e F para falso.\n\n1. Após o traçado, registram-se rumos verdadeiros e distâncias entre pontos de inflexão.\n2. ETD e ETA previstos podem ser calculados com base na SOA planejada.\n3. A tabela da derrota dispensa as coordenadas dos pontos.\n4. O briefing deve ocorrer antes de submeter o planejamento ao Encarregado.\n\nQual é a sequência correta?",
+      "options": [
+        "V – F – V – F",
+        "F – V – F – V",
+        "V – V – F – F",
+        "V – V – V – V"
+      ],
+      "answer": 2,
+      "explanation": "1: V. Esses dados permitem executar e controlar a derrota. 2: V. A velocidade de avanço serve de base aos horários previstos. 3: F. As coordenadas integram a tabela indicada na aula. 4: F. O material prevê aprovação do Encarregado antes do briefing.",
+      "format": "vf",
+      "statements": [
+        {
+          "text": "Após o traçado, registram-se rumos verdadeiros e distâncias entre pontos de inflexão.",
+          "truth": true
+        },
+        {
+          "text": "ETD e ETA previstos podem ser calculados com base na SOA planejada.",
+          "truth": true
+        },
+        {
+          "text": "A tabela da derrota dispensa as coordenadas dos pontos.",
+          "truth": false
+        },
+        {
+          "text": "O briefing deve ocorrer antes de submeter o planejamento ao Encarregado.",
+          "truth": false
+        }
+      ]
+    },
+    {
+      "id": "c359",
+      "topic": 8,
+      "page": "5-6",
+      "question": "Correlacione as duas colunas.\n\n1. Cartas náuticas\n2. Roteiros\n3. Tábuas das Marés\n4. Avisos aos Navegantes\n\nA. Fornecem previsões de maré dos locais abrangidos.\nB. Trazem informações para atualizar cartas e publicações.\nC. Representam a área nas escalas necessárias ao traçado.\nD. Trazem descrições úteis da costa e dos portos.\n\nQual sequência de números corresponde a A, B, C, D?",
+      "options": [
+        "1 – 3 – 4 – 2",
+        "2 – 3 – 1 – 4",
+        "4 – 1 – 2 – 3",
+        "3 – 4 – 1 – 2"
+      ],
+      "answer": 3,
+      "explanation": "A → 3 (Tábuas das Marés): Fornecem previsões de maré dos locais abrangidos.. B → 4 (Avisos aos Navegantes): Trazem informações para atualizar cartas e publicações.. C → 1 (Cartas náuticas): Representam a área nas escalas necessárias ao traçado.. D → 2 (Roteiros): Trazem descrições úteis da costa e dos portos..",
+      "format": "matching",
+      "associations": [
+        3,
+        4,
+        1,
+        2
+      ]
+    },
+    {
+      "id": "c360",
+      "topic": 6,
+      "page": "7",
+      "question": "Julgue as afirmações: V para verdadeiro e F para falso.\n\n1. As regras de luzes se aplicam do pôr ao nascer do Sol.\n2. De dia, em visibilidade restrita, as luzes prescritas instaladas também devem ser exibidas.\n3. As regras referentes às marcas se aplicam exclusivamente à noite.\n4. As luzes prescritas só podem ser exibidas depois de anoitecer.\n\nQual é a sequência correta?",
+      "options": [
+        "V – V – F – F",
+        "V – V – F – V",
+        "F – F – F – F",
+        "F – F – V – V"
+      ],
+      "answer": 0,
+      "explanation": "1: V. Esse é o período normal previsto na Regra 20 apresentada. 2: V. A restrição de visibilidade estende a obrigação ao período diurno. 3: F. As marcas são aplicáveis ao período diurno. 4: F. Também podem ou devem ser exibidas durante o dia nas situações previstas.",
+      "format": "vf",
+      "statements": [
+        {
+          "text": "As regras de luzes se aplicam do pôr ao nascer do Sol.",
+          "truth": true
+        },
+        {
+          "text": "De dia, em visibilidade restrita, as luzes prescritas instaladas também devem ser exibidas.",
+          "truth": true
+        },
+        {
+          "text": "As regras referentes às marcas se aplicam exclusivamente à noite.",
+          "truth": false
+        },
+        {
+          "text": "As luzes prescritas só podem ser exibidas depois de anoitecer.",
+          "truth": false
+        }
+      ]
+    },
+    {
+      "id": "c361",
+      "topic": 6,
+      "page": "8-9",
+      "question": "Julgue as afirmações: V para verdadeiro e F para falso.\n\n1. A luz de bordo encarnada corresponde a bombordo.\n2. Cada luz de bordo cobre um setor de 225°.\n3. A luz de mastro apresentada é branca, cobrindo 225°.\n4. A segunda luz de mastro de embarcação inferior a 50 m é proibida.\n\nQual é a sequência correta?",
+      "options": [
+        "F – V – V – F",
+        "V – F – V – F",
+        "F – F – V – F",
+        "V – F – V – V"
+      ],
+      "answer": 1,
+      "explanation": "1: V. A verde corresponde a boreste. 2: F. Cada uma cobre 112,5°; 225° é o arco da luz de mastro. 3: V. O setor é centrado na proa. 4: F. Não é obrigatória nesse caso, mas pode ser exibida.",
+      "format": "vf",
+      "statements": [
+        {
+          "text": "A luz de bordo encarnada corresponde a bombordo.",
+          "truth": true
+        },
+        {
+          "text": "Cada luz de bordo cobre um setor de 225°.",
+          "truth": false
+        },
+        {
+          "text": "A luz de mastro apresentada é branca, cobrindo 225°.",
+          "truth": true
+        },
+        {
+          "text": "A segunda luz de mastro de embarcação inferior a 50 m é proibida.",
+          "truth": false
+        }
+      ]
+    },
+    {
+      "id": "c362",
+      "topic": 6,
+      "page": "8-9,11",
+      "question": "Julgue as afirmações: V para verdadeiro e F para falso.\n\n1. A luz circular cobre todo o horizonte, 360°.\n2. A luz de alcançado é branca e cobre 135° pela popa.\n3. A luz verde de bordo fica a bombordo.\n4. Quando exibida, a segunda luz de mastro fica à ré e mais alta que a de vante.\n\nQual é a sequência correta?",
+      "options": [
+        "F – V – F – V",
+        "F – F – V – V",
+        "V – V – F – V",
+        "V – V – F – F"
+      ],
+      "answer": 2,
+      "explanation": "1: V. É a definição de luz circular apresentada. 2: V. Esse é o setor indicado no quadro de luzes. 3: F. A luz verde é de boreste; a encarnada é de bombordo. 4: V. Essa é a disposição da Regra 23 apresentada.",
+      "format": "vf",
+      "statements": [
+        {
+          "text": "A luz circular cobre todo o horizonte, 360°.",
+          "truth": true
+        },
+        {
+          "text": "A luz de alcançado é branca e cobre 135° pela popa.",
+          "truth": true
+        },
+        {
+          "text": "A luz verde de bordo fica a bombordo.",
+          "truth": false
+        },
+        {
+          "text": "Quando exibida, a segunda luz de mastro fica à ré e mais alta que a de vante.",
+          "truth": true
+        }
+      ]
+    },
+    {
+      "id": "c363",
+      "topic": 6,
+      "page": "8,11",
+      "question": "Correlacione as duas colunas.\n\n1. Luz de bordo de bombordo\n2. Luz de bordo de boreste\n3. Luz de mastro\n4. Luz de alcançado\n\nA. Branca, setor de 225° centrado na proa.\nB. Encarnada, setor de 112,5°.\nC. Branca, setor de 135° centrado na popa.\nD. Verde, setor de 112,5°.\n\nQual sequência de números corresponde a A, B, C, D?",
+      "options": [
+        "1 – 4 – 3 – 2",
+        "1 – 4 – 2 – 3",
+        "3 – 1 – 2 – 4",
+        "3 – 1 – 4 – 2"
+      ],
+      "answer": 3,
+      "explanation": "A → 3 (Luz de mastro): Branca, setor de 225° centrado na proa.. B → 1 (Luz de bordo de bombordo): Encarnada, setor de 112,5°.. C → 4 (Luz de alcançado): Branca, setor de 135° centrado na popa.. D → 2 (Luz de bordo de boreste): Verde, setor de 112,5°..",
+      "format": "matching",
+      "associations": [
+        3,
+        1,
+        4,
+        2
+      ]
+    }
+  ],
+  "collections": [
+    {
+      "id": 16,
+      "title": "Bizurado de Prova",
+      "description": "Coordenadores, IALA B, manobras RIPEAM, Roteiro e Carta 12.000, luzes, planejamento, tipos e métodos de navegação e entrada/saída de porto. Inclui correlacione e V/F.",
+      "questionIds": [
+        "c015",
+        "c016",
+        "c017",
+        "c018",
+        "c019",
+        "c129",
+        "c130",
+        "c131",
+        "c132",
+        "c133",
+        "c135",
+        "c136",
+        "c151",
+        "c152",
+        "c153",
+        "c154",
+        "c155",
+        "c156",
+        "c157",
+        "c158",
+        "c159",
+        "c160",
+        "c161",
+        "c162",
+        "c163",
+        "c164",
+        "c165",
+        "c166",
+        "c167",
+        "c168",
+        "c169",
+        "c170",
+        "c171",
+        "c172",
+        "c173",
+        "c174",
+        "c175",
+        "c176",
+        "c177",
+        "c178",
+        "c179",
+        "c180",
+        "c181",
+        "c182",
+        "c183",
+        "c184",
+        "c187",
+        "c196",
+        "c205",
+        "c206",
+        "c207",
+        "c208",
+        "c209",
+        "c210",
+        "c211",
+        "c212",
+        "c213",
+        "c215",
+        "c216",
+        "c217",
+        "c218",
+        "c219",
+        "c220",
+        "c221",
+        "c222",
+        "c223",
+        "c224",
+        "c225",
+        "c226",
+        "c227",
+        "c228",
+        "c229",
+        "c230",
+        "c231",
+        "c232",
+        "c233",
+        "c234",
+        "c235",
+        "c236",
+        "c237",
+        "c238",
+        "c336",
+        "c337",
+        "c338",
+        "c339",
+        "c340",
+        "c341",
+        "c342",
+        "c343",
+        "c344",
+        "c345",
+        "c346",
+        "c347",
+        "c348",
+        "c349",
+        "c350",
+        "c351",
+        "c352",
+        "c353",
+        "c354",
+        "c355",
+        "c356",
+        "c357",
+        "c358",
+        "c359",
+        "c360",
+        "c361",
+        "c362",
+        "c363"
+      ]
     }
   ]
 };

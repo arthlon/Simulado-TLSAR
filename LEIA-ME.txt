@@ -5,7 +5,7 @@ index.html        Página inicial e escolha dos cursos.
 css/estilo.css    Aparência dos dois simulados.
 js/simulado.js    Regras, navegação, correção, pontuação e progresso.
 dados/tlsar.js   159 perguntas TLSAR e suas referências.
-dados/clsar.js   335 perguntas CLSAR e suas referências.
+dados/clsar.js   363 perguntas CLSAR, revisão Bizurado de Prova e referências.
 
 COMO USAR NO COMPUTADOR
 1. Extraia todos os arquivos do ZIP para uma pasta.
@@ -287,6 +287,11 @@ RÓTULOS DOS RESULTADOS
 Os ângulos são exibidos com o símbolo de graus, sem o sufixo V. A referência continua sendo o norte verdadeiro. O intervalo entre incidente e chegada é identificado como Atraso. No resumo PDF, corrente, vento, leeway e deriva resultante seguem o padrão velocidade (nós) / direção (graus). Deriva resultante e Deslocamento ficam na sequência da seção DERIVA. O deslocamento é contado desde o LKP; o intervalo próprio LKP → chegada foi retirado do resumo. O atraso entre incidente e chegada permanece informado.
 
 AMPLIAÇÃO DO SIMULADO CLSAR
-Adicionadas 207 questões dos 12 arquivos novos únicos: balizamento, RIPEAM, luzes, publicações, planejamento da derrota, tipos e métodos, entrada e saída de porto, baixa visibilidade, mau tempo, meteorologia, avarias e deriva/área/padrões de busca. Os reenvios idênticos foram desconsiderados. São 335 questões em 16 assuntos, mantendo os quatro temas SAR anteriores.
+Adicionadas 207 questões dos 12 arquivos novos únicos: balizamento, RIPEAM, luzes, publicações, planejamento da derrota, tipos e métodos, entrada e saída de porto, baixa visibilidade, mau tempo, meteorologia, avarias e deriva/área/padrões de busca. Os reenvios idênticos foram desconsiderados. O banco atual tem 363 questões em 16 assuntos, incluindo os 28 exercícios adicionais do Bizurado descrito abaixo e mantendo os quatro temas SAR anteriores.
 As 128 questões antigas, seus IDs, gabaritos e os quatro IDs de fonte foram preservados. A chave de armazenamento continua a mesma; uma tentativa em andamento pode ser retomada. Rodadas já iniciadas mantêm suas questões originais; para praticar os novos assuntos, inicie uma nova rodada após terminar ou substituir a anterior. TLSAR, missões salvas e calculadora não são modificados por esta ampliação.
 Cada questão tem quatro alternativas, uma resposta correta, explicação e arquivo/página de referência. As páginas indicadas são as páginas do PDF, contando desde a primeira. Leituras de tabelas e figuras foram conferidas visualmente; cálculos usam unidades e arredondamentos explicitados no enunciado. A seleção por assunto, embaralhamento, correção, bloqueio de questões respondidas, retorno às puladas e nota de 0 a 10 permanecem iguais.
+
+BIZURADO DE PROVA — CLSAR
+Nova opção na seleção de assuntos, reunindo 109 questões: 81 do banco existente e 28 novos exercícios de correlação ou sequências V/F. Abrange coordenadores SC/SMC/OSC/ACO, IALA B, manobras RIPEAM (incluindo roda a roda), Roteiro e Carta 12.000, luzes, documentos do planejamento da derrota, tipos e métodos de navegação e entrada/saída de porto. O Roteiro e a Carta 12.000 são tratados como publicações distintas.
+São 363 questões únicas no CLSAR. O Bizurado é uma seleção de revisão sobre as fontes existentes, não uma nova aula. Pode ser escolhido sozinho ou junto de outros assuntos; o contador considera a união das questões e a rodada não repete IDs. Novos exercícios continuam vinculados à aula e à página reais, também disponíveis nos respectivos assuntos.
+V/F usa quatro afirmações e quatro alternativas de sequência; correlacione usa colunas identificadas e quatro sequências possíveis. A correção explica cada afirmação ou associação. O formato mantém uma questão por tela e uma única alternativa correta. IDs e questões anteriores foram preservados, assim como o progresso salvo.
