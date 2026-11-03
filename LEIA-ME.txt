@@ -298,3 +298,9 @@ V/F usa quatro afirmações e quatro alternativas de sequência; correlacione us
 
 EXPORTAÇÃO SOMENTE DA DERIVA
 O exercício atual e as missões salvas podem exportar PDF apenas com a deriva calculada. Sem LKP, o PDF tem uma página de resumo; com LKP, inclui a carta com DATUM 1, DATUM 2 e traçado da deriva. Sem área calculada não são desenhados círculo ou quadrado, nem inventados valores de área. Rascunhos e deriva invalidada continuam bloqueados. A graduação fixa da carta e o recorte permanecem iguais.
+
+SIMULADO SOBREMAR
+Acrescentado o curso C-EXP-SOBREMAR, com banco próprio em dados/sobremar.js e progresso independente na chave missao-lsar-sobremar-v1. Os bancos e as chaves TLSAR/CLSAR permanecem inalterados.
+159 questões: Histórico/SOLAS (15), Material de salvatagem (46), Abandono do navio (32), Sobrevivência no mar (32), Comunicações e sinalização de emergência (34).
+Base: fotos das páginas 1-1 e 1-2 do CAAML-702, Primeiro Dia de Aula Cap- 2 e 3 .ppt (143 slides) e Segundo Dia de Aula Cap- 4 e 5 .ppt (103 slides). A referência dos slides é contada desde a capa; as referências ao manual usam a página impressa. Capas, intervalos, programação das aulas e exemplos motivacionais não geram questões.
+Todas as questões têm quatro alternativas, uma correta, explicação e referência. Há seleção por assunto e rodadas de 20/40/60/todas, correção imediata, bloqueio das respondidas, retorno às puladas e nota de 0 a 10. Os slides são material de estudo; os procedimentos operativos seguem os manuais e as instruções aplicáveis a cada equipamento. As apresentações e fotos originais não são alteradas nem incluídas como downloads no site.
